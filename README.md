@@ -116,8 +116,8 @@ through normal security maintenance.
 Supabase is the source of truth for the database schema.
 
 - **Content tables** (`courses`, `sections`, `chapters`, `lessons`) were created in Supabase with the sample Python curriculum already loaded. Django maps its models onto them and does **not** create or alter them when `DATABASE_URL` points at Postgres. Change the schema in Supabase (SQL migrations), then update `learning/models.py` to match.
-- **Connect:** set `DATABASE_URL` to your Supabase Postgres URI (see `.env.example`) and run `python manage.py migrate`. That only creates Django's own tables (admin, sessions); it never touches the content tables.
-- **Local SQLite (no `DATABASE_URL`):** run `python manage.py migrate --run-syncdb` then `python manage.py seed_python`.
+- **Connect:** set `DATABASE_URL` to your Supabase Postgres URI (see `.env.example`) and run `python manage.py migrate`. That creates Django's own tables (admin, sessions) and never touches the content tables.
+- **Local SQLite (no `DATABASE_URL`):** just run `python manage.py migrate`. It creates the content tables locally and loads the sample Python course. On Supabase the same migration skips table creation, because the tables already exist.
 - **Login:** Supabase Auth handles sign-up/log-in (`/signup/`, `/login/`, `/account/`). Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.
 - **Users and plans:** each new Supabase user automatically gets a `public.profiles` row (`plan` = `free` or `paid`, `plan_status`, `plan_started_at`, `plan_expires_at`) and a `public.subscriptions` history row. Users can read their own rows and edit only name and phone; plan changes must come from the server.
 - Row level security is on for every table in `public`, so nothing Django owns is readable through Supabase's public REST API.
