@@ -34,7 +34,9 @@ done.onclick=async()=>{
     document.getElementById('celmsg').textContent=(s.goal_met?`Daily goal reached (${s.today_done}/${s.daily_goal}). `:`${s.today_done}/${s.daily_goal} lessons today. `)+`🔥 ${s.streak}-day streak · ⚡ ${s.xp} XP total.`;
     cel.classList.add('show');
     const pill=document.getElementById('statuspill');if(pill){pill.className='pill ok';pill.textContent='✓ Completed'}
-    const dc=document.getElementById('donecount');if(dc&&d.xp_gained){const [a,b]=dc.textContent.split('/').map(Number);dc.textContent=(a+1)+'/'+b}
+    const dc=document.getElementById('donecount');if(dc&&d.xp_gained){const [a,b]=dc.textContent.split('/').map(Number);dc.textContent=(a+1)+'/'+b;
+      const meter=document.getElementById('course-progress');
+      if(meter){meter.value=a+1;document.getElementById('course-percent').textContent=Math.round(100*meter.value/meter.max)+'%'}}
   }catch(e){done.disabled=false;done.textContent='Mark complete';document.getElementById('fp').textContent='Could not save. Check your connection and try again.'}
 };
 })();

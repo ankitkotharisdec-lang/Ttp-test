@@ -240,3 +240,11 @@ footer{background:var(--nav);color:#9db4c6;padding:26px;text-align:center;font-s
   .row{gap:12px;padding:14px}.row small{display:none}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.reader-index { margin: 1.25rem 0; border-block: 1px solid #d9e4ec; }
+.reader-index summary { cursor: pointer; padding: .9rem 0; font-weight: 700; }
+.reader-index ol { padding-inline-start: 2.2rem; max-height: 20rem; overflow: auto; }
+.reader-index a { display: block; padding: .45rem .65rem; color: #22577a; }
+.reader-index a[aria-current] { background: #e9f5fa; font-weight: 700; }
+.reader-progress { display: grid; grid-template-columns: 1fr auto; gap: .35rem; margin: 1rem 0; }
+.reader-progress progress { grid-column: 1 / -1; width: 100%; height: .65rem; accent-color: #167863; }

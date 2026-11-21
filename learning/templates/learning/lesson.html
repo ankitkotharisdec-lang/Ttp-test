@@ -5,6 +5,12 @@
 <article class="lcard">
 <h1 class="chtitle">{{chapter_no}}. {{lesson.chapter.title}}</h1>
 <h2 class="lestitle">{{chapter_no}}.{{lesson_no}} {{lesson.title}}</h2>
+<details class="reader-index">
+<summary>Chapter index · {{ chapter_lessons|length }} lessons</summary>
+<nav aria-label="Chapter lessons"><ol>
+{% for item in chapter_lessons %}<li><a href="{{ item.get_absolute_url }}" {% if item.id == lesson.id %}aria-current="page"{% endif %}>{{ item.title }}</a></li>{% endfor %}
+</ol></nav></details>
+{% if logged_in and total and not preview %}<label class="reader-progress">Course progress <span id="course-percent">{% widthratio done_total total 100 %}%</span><progress id="course-progress" value="{{ done_total }}" max="{{ total }}"></progress></label>{% endif %}
 <div class="metas">{% if position %}<span class="pill">Lesson {{position}} of {{total}}</span>{% endif %}{% if preview %}<span class="pill pv">Admin preview{% if not lesson.is_published %} · draft{% endif %}</span>{% elif status == 'completed' %}<span class="pill ok" id="statuspill">✓ Completed</span>{% elif status == 'in_progress' %}<span class="pill mid" id="statuspill">● In progress</span>{% endif %}{% if me %}<span class="pill">🔥 {{me.streak}} day streak</span><span class="pill">⚡ {{me.xp}} XP</span>{% endif %}</div>
 {% for b in blocks %}{% if b.block_type == 'text' %}<div class="blk blk-text">{% if b.title %}<h3>{{b.title}}</h3>{% endif %}{{b.body|rich}}</div>
 {% elif b.block_type == 'must_know' %}<div class="blk-must"><span class="ic" aria-hidden="true">i</span><div class="bd"><span class="tag">{{b.title|default:"Must Know:"}}</span>{{b.body|rich}}</div><svg class="bm" width="22" height="26" viewBox="0 0 22 26" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M3 2h16v22l-8-6-8 6z"/></svg></div>
