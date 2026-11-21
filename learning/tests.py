@@ -49,3 +49,36 @@ class CourseTests(TestCase):
             self.assertEqual(positions,sorted(positions))
     def test_roadmap_page(self):
         self.assertContains(self.client.get('/'),'data-outline-url="/api/courses/python/outline/"')
+from unittest import mock
+from django.test import override_settings
+from . import supabase_auth as sb
+SESSION={'user':{'id':'11111111-1111-1111-1111-111111111111','email':'a@b.com'},'access_token':'tok','refresh_token':'ref'}
+@override_settings(SUPABASE_URL='https://x.supabase.co',SUPABASE_PUBLISHABLE_KEY='k')
+class AuthTests(TestCase):
+    def test_account_requires_login(self):
+        r=self.client.get('/account/')
+        self.assertEqual(r.status_code,302);self.assertTrue(r['Location'].startswith('/login/'))
+    @mock.patch('learning.views.sb.get_profile',return_value={'plan':'paid','email':'a@b.com'})
+    @mock.patch('learning.views.sb.sign_in',return_value=SESSION)
+    def test_login_stores_plan_and_opens_account(self,si,gp):
+        r=self.client.post('/login/',{'email':'A@B.com','password':'secret123'})
+        self.assertRedirects(r,'/account/',fetch_redirect_response=False)
+        si.assert_called_once_with('a@b.com','secret123')
+        self.assertEqual(self.client.session['sb_plan'],'paid')
+        self.assertContains(self.client.get('/account/'),'PAID')
+    @mock.patch('learning.views.sb.sign_in',side_effect=sb.SupabaseError('Invalid login credentials',400))
+    def test_bad_login_shows_error(self,si):
+        r=self.client.post('/login/',{'email':'a@b.com','password':'x'})
+        self.assertContains(r,'Incorrect email or password.');self.assertNotIn('sb_user_id',self.client.session)
+    @mock.patch('learning.views.sb.sign_up',return_value={'user':{'id':'u','email':'a@b.com'}})
+    def test_signup_without_session_asks_to_confirm_email(self,su):
+        r=self.client.post('/signup/',{'full_name':'Ankit','email':'a@b.com','password':'longenough1'})
+        self.assertContains(r,'Check your email');su.assert_called_once_with('a@b.com','longenough1','Ankit')
+    def test_signup_rejects_short_password(self):
+        self.assertContains(self.client.post('/signup/',{'full_name':'A','email':'a@b.com','password':'short'}),'at least 8')
+    def test_login_ignores_offsite_next(self):
+        with mock.patch('learning.views.sb.sign_in',return_value=SESSION),mock.patch('learning.views.sb.get_profile',return_value={}):
+            r=self.client.post('/login/',{'email':'a@b.com','password':'p','next':'https://evil.example/'})
+        self.assertRedirects(r,'/account/',fetch_redirect_response=False)
+    def test_logout_requires_post(self):
+        self.assertEqual(self.client.get('/logout/').status_code,405)

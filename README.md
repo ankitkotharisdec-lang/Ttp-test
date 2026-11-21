@@ -110,3 +110,10 @@ DJANGO_DEBUG=0, a secret DJANGO_SECRET_KEY, DJANGO_ALLOWED_HOSTS, HTTPS/proxy
 configuration and backups. DEBUG defaults on ONLY to make local setup easy.
 Dependencies are pinned to the versions installed during this build; update them
 through normal security maintenance.
+
+## Supabase (database + login)
+
+- **Database:** set `DATABASE_URL` to your Supabase Postgres URI (see `.env.example`), then run `python manage.py migrate` and `python manage.py seed_python`. Without `DATABASE_URL` the app still uses local SQLite.
+- **Login:** Supabase Auth handles sign-up/log-in (`/signup/`, `/login/`, `/account/`). Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.
+- **Users and plans:** each new Supabase user automatically gets a `public.profiles` row (`plan` = `free` or `paid`, `plan_status`, `plan_started_at`, `plan_expires_at`) and a `public.subscriptions` history row. Users can read their own rows and edit only name and phone; plan changes must come from the server.
+- After `migrate`, Django enables row level security on its own tables so they are not readable through Supabase's public REST API.
