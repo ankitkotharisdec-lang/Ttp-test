@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from learning.models import Course,Section,Chapter,Lesson
+from learning.models import Course,Section,Chapter,Lesson,LessonBlock
+from learning.sample_content import seed_blocks
 DATA={
  'Python Core': [('Introduction to Python',['What is Python?','Installing Python','Your first program']),('Variables and Data Types',['Understanding variables','Numbers and strings','Type conversion']),('Control Flow',['If statements','Else and elif','Nested conditions']),('Strings',['Indexing','Slicing','String methods']),('Loops and Iteration',['For loops','While loops','Break and continue'])],
  'Data Structures':[('Lists and Tuples',['Creating lists','List methods','Tuples']),('Dictionaries and Sets',['Key-value pairs','Dictionary methods','Sets'])],
@@ -17,4 +18,5 @@ class Command(BaseCommand):
                 chapter,_=Chapter.objects.get_or_create(section=section,title=title,defaults={'position':ci,'is_published':True})
                 for li,title in enumerate(lessons,1):
                     Lesson.objects.get_or_create(chapter=chapter,title=title,defaults={'position':li,'is_published':True,'explanation':'Sample lesson. Replace this text through the Django admin.','code_example':'message = "Hello, Python!"\nprint(message)','expected_output':'Hello, Python!','summary':'Practice the example, then add your own content.'})
+        seed_blocks(Lesson,LessonBlock)
         self.stdout.write(self.style.SUCCESS('Sample Python curriculum ready.'))
