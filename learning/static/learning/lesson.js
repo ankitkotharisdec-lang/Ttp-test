@@ -29,6 +29,7 @@ done.onclick=async()=>{
     if(lp.dataset.status!=='completed'){
       const chapter=document.getElementById('chapter-meter');
       chapter.value=Math.min(chapter.max,chapter.value+1);
+      document.getElementById('read-count').textContent=chapter.value;
       document.getElementById('chapter-value').textContent=Math.round(100*chapter.value/chapter.max)+'%';
     }
     done.hidden=true;lp.dataset.status='completed';

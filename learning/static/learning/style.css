@@ -280,3 +280,35 @@ body.grid { background: #f5f6f8; }
 .lesson-page .lestitle { font-size:24px; }
 .lesson-page .blk-text { font-size:21px; line-height:1.6; }
 @media(max-width:600px){.study-head>div{gap:10px;flex-wrap:wrap}.study-head nav{left:auto;right:0}.study-head label{width:100%}.lesson-page .lwrap{margin-top:15px}.node .label{font-size:15px}}
+
+#chapter-dialog { width:min(750px,94vw); max-height:min(750px,84dvh); border-radius:4px; }
+#chapter-dialog::backdrop { background:rgb(0 0 0 /.5); }
+#chapter-dialog .dh { padding:19px 32px; min-height:86px; gap:28px; }
+#chapter-dialog .dh h2 { font-size:16px; line-height:1.35; }
+#chapter-dialog .dh p { font-size:14px; }
+#chapter-dialog .dnode { width:41px; height:41px; border:0; font-size:16px; background:radial-gradient(circle,white 61%,transparent 63%),conic-gradient(#55ba98 var(--filled,0%),#e6e2d1 0); }
+#chapter-dialog .dnode .st { width:16px; height:16px; font-size:11px; }
+#lesson-list { padding:3px 0; }
+#lesson-list .lrow { min-height:60px; padding:0 28px 0 26px; gap:16px; font-size:16px; font-weight:300; }
+#lesson-list .tm { width:16px; }
+#lesson-list .tm::before { top:0; }
+#lesson-list .tm::after { bottom:0; }
+#lesson-list .tm::before,#lesson-list .tm::after { width:1px; }
+#lesson-list .dot { width:16px; height:16px; font-size:10px; }
+#lesson-list .completed .dot { background:#55ba98; border-color:#55ba98; }
+#lesson-list .in_progress .dot { border-width:1px; }
+#lesson-list .lt { align-self:stretch; display:flex; align-items:center; margin:0; padding:16px 0; }
+#lesson-list .lrow:focus-visible { outline-offset:-3px; background:#edf4fb; }
+.study-head .read-count { float:right; font-size:inherit; font-weight:300; }
+.read-count b { font-weight:inherit; }
+.lesson-page .lwrap { max-width:1186px; }
+.lesson-page .lcard { padding-inline:clamp(22px,7.8vw,104px); }
+.lesson-page .chtitle { margin:0 0 25px; font-weight:300; }
+.lesson-page .lestitle { margin:0 0 24px; }
+.lesson-page .blk-text,.lesson-page .blk-must p { font-weight:300; text-align:start; }
+.lesson-page .blk-must { border-width:1px; margin:40px 0; }
+.lesson-page .blk-must .ic { width:23px; height:23px; font-size:14px; }
+.lesson-page .blk-must .tag { font-size:20px; }
+.lesson-page .botbar { position:static; background:transparent; padding:0 16px 72px; }
+.lesson-page .lwrap { padding-bottom:28px; }
+@media(max-width:640px){#chapter-dialog .dh{padding:16px 20px;gap:16px}#lesson-list .lrow{padding-inline:18px}.study-head .read-count{font-size:12px}.lesson-page .blk-text{font-size:18px}}

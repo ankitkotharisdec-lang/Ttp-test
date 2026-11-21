@@ -77,10 +77,11 @@ $('#resume-btn').onclick=e=>{const b=e.currentTarget;if(b.getAttribute('href')==
 async function openChapter(chapterId){
   const id=++requestId,ch=allChapters().find(c=>c.id===chapterId),no=allChapters().indexOf(ch)+1;
   $('#dnode').innerHTML=`${no}${ch?badge(ch):''}`;$('#dnode').style.borderColor=ch&&state(ch)==='complete'?'var(--ok)':'';
-  $('#dialog-title').textContent=ch?ch.title:'Loading lessons…';$('#dialog-sub').textContent=ch?`${done(ch)} / ${ch.lesson_count} lessons read`:'';$('#lesson-list').textContent='';$('#chapter-dialog').showModal();
+  $('#dialog-title').textContent=ch?ch.title:'Loading lessons…';$('#dialog-sub').textContent=ch?`${done(ch)} / ${ch.lesson_count} lessons read`:'';$('#dnode').style.setProperty('--filled', '0%');$('#lesson-list').textContent='';$('#chapter-dialog').showModal();
   try{const c=await read(`/api/chapters/${chapterId}/lessons/`);if(id!==requestId)return;
     $('#dialog-title').textContent=c.title;
     const dn=c.lessons.filter(l=>l.status==='completed').length;$('#dialog-sub').textContent=`${dn} / ${c.lessons.length} lessons read`;
+    $('#dnode').style.setProperty('--filled', (c.lessons.length ? 100*dn/c.lessons.length : 0)+'%');
     $('#lesson-list').innerHTML=c.lessons.length?c.lessons.map((l,i)=>{const prev=c.lessons[i-1]&&c.lessons[i-1].status==='completed';
       return `<a href="${l.url}" class="lrow ${l.status} ${prev?'prev-done':''}"><span class="tm"><span class="dot" title="${l.status==='completed'?'Complete':l.status==='in_progress'?'In progress':'Not started'}">${l.status==='completed'?'✓':l.status==='in_progress'?'!':''}</span></span><span class="lt"><b>${no}.${i+1}</b>${esc(l.title)}</span></a>`}).join(''):'<p class="dsum">No published lessons yet.</p>'}
   catch(e){if(id===requestId)$('#dialog-title').textContent='Could not load lessons. Close and try again.'}}
