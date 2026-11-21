@@ -39,18 +39,27 @@ function snake(chapters){
     html+=`<div class="finish" style="left:${last.x}px;top:${fy+18}px">${TROPHY}</div>`;
     h=fy+90;
   }else{
-    const rowH=210,R=rowH/2,pad=190,xs=Array.from({length:k},(_,j)=>pad+j*(W-2*pad)/(k-1)),spacing=xs[1]-xs[0],lw=spacing-70;
-    const pos=chapters.map((c,i)=>{const r=Math.floor(i/k),j=i%k;return{x:xs[r%2?k-1-j:j],y:top+r*rowH,r}});
-    pos.forEach((p,i)=>{html+=node(chapters[i],i,p.x,p.y,'t',lw,chapters[i].id===cur)});
-    const rows=pos.at(-1).r,xB=xs[0]-60,xE=xs[k-1]+60,lastP=pos.at(-1),endX=lastP.r%2?lastP.x-spacing/2:lastP.x+spacing/2;
-    path=`M ${xs[0]-40} ${top}`;
-    for(let r=0;r<=rows;r++){const y=top+r*rowH;
-      if(r<rows)path+=r%2===0?` H ${xE} A ${R} ${R} 0 0 1 ${xE} ${y+rowH}`:` H ${xB} A ${R} ${R} 0 0 0 ${xB} ${y+rowH}`;
-      else path+=` H ${endX}`}
-    html+=`<div class="finish" style="left:${endX}px;top:${top+rows*rowH-40}px">${TROPHY}</div>`;
-    h=top+rows*rowH+120;
+    const rowHeight=274, radius=104, left=W*.225, right=W*.775;
+    const slots=[[left,0,'l'],[W*.475,0,'t'],[right,rowHeight/2,'r'],
+                 [W*.635,rowHeight,'t'],[W*.36,rowHeight,'t'],[left,rowHeight*1.5,'l']];
+    const points=chapters.map((chapter,i)=>{
+      const [x,offset,label]=slots[i%slots.length];
+      const y=top+offset+Math.floor(i/slots.length)*2*rowHeight;
+      html+=node(chapter,i,x,y,label,label==='t'?W*.22:W*.17,chapter.id===cur);
+      return {x,y};
+    });
+    path=`M ${left} ${top}`;
+    points.slice(1).forEach((point,index)=>{
+      const {x,y}=point, prior=points[index], slot=(index+1)%6;
+      if(slot===2)path+=` H ${right-radius} Q ${right} ${prior.y} ${right} ${prior.y+radius} V ${y}`;
+      else if(slot===3)path+=` V ${y-radius} Q ${right} ${y} ${right-radius} ${y} H ${x}`;
+      else if(slot===5)path+=` H ${left+radius} Q ${left} ${prior.y} ${left} ${prior.y+radius} V ${y}`;
+      else if(slot===0)path+=` V ${y}`;
+      else path+=` H ${x}`;
+    });
+    h=points.at(-1).y+105;
   }
-  return `<div class="roadmap" style="height:${h}px"><svg width="${W}" height="${h}" viewBox="0 0 ${W} ${h}" aria-hidden="true"><path d="${path}" stroke="#eaf3fa" stroke-width="30" fill="none" stroke-linecap="round"/><path d="${path}" stroke="#cfe3f0" stroke-width="3" fill="none" stroke-linecap="round"/></svg>${html}</div>`}
+  return `<div class="roadmap" style="height:${h}px"><svg width="${W}" height="${h}" viewBox="0 0 ${W} ${h}" aria-hidden="true"><path d="${path}" stroke="#cfe3f0" stroke-width="2" fill="none" stroke-linecap="round"/></svg>${html}</div>`}
 function render(){
   if(!data)return;renderChips();renderResume();
   $('#tabs').innerHTML=data.sections.map((s,i)=>`<button data-section="${i}" class="${i===section?'active':''}" aria-pressed="${i===section}">${esc(s.title)}</button>`).join('');

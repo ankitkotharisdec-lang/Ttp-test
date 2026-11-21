@@ -73,6 +73,7 @@ def lesson_detail(request,lesson_id):
          'position':i+1 if i>=0 else None,'total':len(order),'me':progress.stats(uid) if uid else None,
          'chapter_no':chapter_no,'lesson_no':lesson_no,'done_total':done_total,
          'chapter_lessons':chapter_lessons,
+         'chapter_done':sum(statuses.get(item.id) == 'completed' for item in chapter_lessons),
          'faces':[(1,'😞','Very unhelpful'),(2,'😕','Unhelpful'),(3,'😐','Neutral'),(4,'🙂','Helpful'),(5,'😄','Very helpful')]}
     return render(request,'learning/lesson.html',ctx)
 @require_http_methods(['POST'])

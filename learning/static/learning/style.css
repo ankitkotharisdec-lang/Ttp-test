@@ -248,3 +248,35 @@ footer{background:var(--nav);color:#9db4c6;padding:26px;text-align:center;font-s
 .reader-index a[aria-current] { background: #e9f5fa; font-weight: 700; }
 .reader-progress { display: grid; grid-template-columns: 1fr auto; gap: .35rem; margin: 1rem 0; }
 .reader-progress progress { grid-column: 1 / -1; width: 100%; height: .65rem; accent-color: #167863; }
+
+body.grid { background: #f5f6f8; }
+.pagehead,.viewrow { background: #fdfefe; box-shadow: 0 0 0 100vmax #fdfefe; clip-path: inset(0 -100vmax); }
+.pagehead h1 { font-size: 32px; }
+.viewrow .v,.tabs button { font-size: 13px; letter-spacing: normal; }
+.ctitle { font-size: 27px; margin: 34px 0 19px; color: #375b70; }
+.ctitle .badge { width: 29px; height: 29px; font-size: 15px; }
+.resume { min-height: 64px; padding: 12px 30px; gap: 14px; background: linear-gradient(100deg,#215977,#163e59); }
+.resume b,.resume p { font-size: 15px; letter-spacing: normal; }
+.resume-btn { padding: 7px 28px; font-size: 13px; letter-spacing: normal; }
+#count:not(:has(+ .panel #retry:not([hidden]))) { position:absolute; width:1px; height:1px; overflow:hidden; }
+.panel::before,.panel::after { opacity: .4; }
+.node,.node.current { width: 60px; height: 60px; border-width: 3px; color: #135373; background: #fff; box-shadow: inset 0 0 0 5px #f5f6f7,0 2px 7px #102e4110; font-size: 25px; }
+.node::before { inset: -3px; mask: radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px)); }
+.node .label { font-size: 17px; line-height: 1.5; color:#34586c; }
+.node .label small { font-size: 13px; color:#707779; }
+.node .label .bar { display:none; }
+.node .st { width:16px; height:16px; font-size:11px; }
+.study-head { background:#102f43; color:white; position:sticky; top:0; z-index:20; }
+.study-head>div { max-width:1180px; margin:auto; min-height:66px; padding:10px 12px; display:flex; align-items:center; gap:24px; }
+.study-head a { color:inherit; }
+.study-head .reader-index { position:relative; border:0; margin:0; }
+.study-head nav { position:absolute; top:100%; left:0; width:min(330px,80vw); background:white; color:#264a60; border:1px solid #d9e4ec; box-shadow:0 8px 22px #102f4322; }
+.study-head label { width:min(32vw,390px); font-size:14px; }
+.study-head progress { display:block; width:100%; height:7px; margin-top:5px; accent-color:#66bce3; }
+.lesson-page { background:#f7f7f7; }
+.lesson-page .lwrap { max-width:1210px; margin-top:40px; }
+.lesson-page .lcard { padding:clamp(28px,5vw,70px) clamp(18px,8vw,108px); }
+.lesson-page .chtitle { font-size:clamp(30px,3.3vw,43px); }
+.lesson-page .lestitle { font-size:24px; }
+.lesson-page .blk-text { font-size:21px; line-height:1.6; }
+@media(max-width:600px){.study-head>div{gap:10px;flex-wrap:wrap}.study-head nav{left:auto;right:0}.study-head label{width:100%}.lesson-page .lwrap{margin-top:15px}.node .label{font-size:15px}}

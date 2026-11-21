@@ -26,6 +26,11 @@ done.onclick=async()=>{
   done.disabled=true;done.textContent='Saving…';
   try{
     const d=await post(rating?{rating}:{});if(!d)return;
+    if(lp.dataset.status!=='completed'){
+      const chapter=document.getElementById('chapter-meter');
+      chapter.value=Math.min(chapter.max,chapter.value+1);
+      document.getElementById('chapter-value').textContent=Math.round(100*chapter.value/chapter.max)+'%';
+    }
     done.hidden=true;lp.dataset.status='completed';
     document.getElementById('fh').textContent=d.xp_gained?'Lesson complete! 🎉':'Already complete';
     document.getElementById('fp').textContent='';
