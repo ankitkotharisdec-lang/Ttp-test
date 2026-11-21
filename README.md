@@ -121,3 +121,12 @@ Supabase is the source of truth for the database schema.
 - **Login:** Supabase Auth handles sign-up/log-in (`/signup/`, `/login/`, `/account/`). Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.
 - **Users and plans:** each new Supabase user automatically gets a `public.profiles` row (`plan` = `free` or `paid`, `plan_status`, `plan_started_at`, `plan_expires_at`) and a `public.subscriptions` history row. Users can read their own rows and edit only name and phone; plan changes must come from the server.
 - Row level security is on for every table in `public`, so nothing Django owns is readable through Supabase's public REST API.
+
+
+## Learning experience (progress, streaks, lesson blocks)
+
+- **Progress is per user** in Supabase tables `lesson_progress` and `daily_activity` (keyed by the Supabase auth user id).
+- **XP and streaks**: 20 XP per lesson, first completion only; a streak is consecutive days with at least one completed lesson; daily goal is 2 lessons (`learning/progress.py`).
+- **Lesson content is made of blocks** (`lesson_blocks`): text, must know, highlight, example (multiple choice with explanation), code, video, summary. Authors add and reorder them in Django admin > Lessons > Blocks; the form only shows the fields each block type needs. Staff can preview draft lessons.
+- **Google sign-in**: in Supabase go to Authentication > Providers > Google, enable it with your Google OAuth client id and secret, then add `https://<your-domain>/auth/callback/` (and `http://localhost:8000/auth/callback/` for local work) under Authentication > URL Configuration > Redirect URLs.
+- The original sample lessons live in `learning/sample_content.py`. They are seeded on SQLite by migration `0004` and are already loaded into the live Supabase project.
