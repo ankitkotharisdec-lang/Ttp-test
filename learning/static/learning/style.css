@@ -154,3 +154,18 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
 [hidden]{display:none!important}
 .blk-hl p{display:inline;margin:0}
 .stat.goal .goal-top{gap:10px}
+
+/* bigger, bolder roadmap closer to the reference */
+main{max-width:1320px}
+.node{width:104px;height:104px;border:6px solid #dfe6d0;font-size:38px;background:#fff}
+.node::before{inset:-6px;background:conic-gradient(var(--green) calc(var(--p)*1%),transparent 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px))}
+.node.complete{border-color:var(--green)}
+.node:hover{background:#fff}
+.node .label{width:280px;bottom:128px;font-size:20px;font-weight:400}.node .label small{font-size:15px}
+.node .label .bar.sm{width:150px;margin:8px auto 0}
+.node .pcount{position:absolute;right:-6px;bottom:-4px;background:var(--navy);color:#fff;font-size:12px;font-weight:600;border-radius:99px;padding:2px 8px;border:2px solid #fff}
+.node.complete .pcount{background:var(--ok)}
+.roadmap svg path{stroke-width:3}
+.row .rt .bar{width:100%;max-width:340px}
+@media(max-width:600px){.node{width:84px;height:84px;font-size:30px}.node .label{width:220px;bottom:auto;left:108px;top:50%;transform:translateY(-50%);text-align:left;font-size:17px}.node .label .bar.sm{margin:8px 0 0}}
+.bar{display:block}
