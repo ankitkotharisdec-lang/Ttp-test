@@ -1,29 +1,27 @@
 (()=>{
 const lp=document.querySelector('.lp');
-// reading progress bar
 const bar=document.getElementById('readbar');
 const upd=()=>{const h=document.documentElement;const m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?Math.min(100,100*h.scrollTop/m):100)+'%'};
 addEventListener('scroll',upd,{passive:true});upd();
-// copy buttons
 document.querySelectorAll('.copy').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.nextElementSibling.innerText);b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500)}catch(e){b.textContent='Press Ctrl+C'}});
-// interactive examples
+// interactive examples: pick an option, then confirm
 document.querySelectorAll('.blk-ex').forEach(ex=>{
-  const right=Number(ex.dataset.correct),box=ex.querySelector('.explain'),opts=[...ex.querySelectorAll('.opt')];
-  opts.forEach(o=>o.onclick=()=>{
-    const n=Number(o.dataset.n);
-    if(n===right){opts.forEach(x=>x.disabled=true);o.classList.add('right');box.className='explain';box.textContent='Correct! '+box.dataset.text}
-    else{o.classList.add('wrong');o.disabled=true;box.className='explain no';box.textContent='Not quite. Try another option.'}
-    box.hidden=false;
-  });
-  if(!right){box.textContent=box.dataset.text;box.hidden=!box.dataset.text}
+  const right=Number(ex.dataset.correct),box=ex.querySelector('.explain'),opts=[...ex.querySelectorAll('.opt')],ok=ex.querySelector('.confirm'),again=ex.querySelector('.again');
+  let sel=0,locked=false;
+  const reset=()=>{sel=0;locked=false;opts.forEach(o=>{o.disabled=false;o.className='opt';o.setAttribute('aria-checked','false')});if(ok)ok.disabled=true;box.hidden=true};
+  opts.forEach(o=>o.onclick=()=>{if(locked)return;opts.forEach(x=>{x.classList.remove('sel','wrong');x.setAttribute('aria-checked','false')});sel=Number(o.dataset.n);o.classList.add('sel');o.setAttribute('aria-checked','true');ok.disabled=false;box.hidden=true});
+  if(ok)ok.onclick=()=>{if(!sel)return;const o=opts[sel-1];
+    if(sel===right){locked=true;opts.forEach(x=>x.disabled=true);o.className='opt right';box.className='explain';box.textContent='Correct! '+box.dataset.text;ok.disabled=true}
+    else{o.className='opt wrong';box.className='explain no';box.textContent='Not quite. Pick another option and confirm again.';ok.disabled=true;sel=0}
+    box.hidden=false};
+  if(again)again.onclick=reset;
+  if(!opts.length){box.textContent=box.dataset.text;box.hidden=!box.dataset.text}
 });
-// complete + rate
 const done=document.getElementById('done');if(!done)return;
 let rating=0;
 const post=async data=>{const r=await fetch(lp.dataset.completeUrl,{method:'POST',credentials:'same-origin',headers:{'X-CSRFToken':lp.dataset.csrf,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(data)});if(r.status===401){location.href='/login/?next='+encodeURIComponent(location.pathname);return null}if(!r.ok)throw Error();return r.json()};
 const rate=document.getElementById('rate');
-const paint=()=>rate.querySelectorAll('button').forEach(b=>b.classList.toggle('on',Number(b.dataset.r)<=rating));
-rate.onclick=async e=>{const b=e.target.closest('[data-r]');if(!b)return;rating=Number(b.dataset.r);paint();if(lp.dataset.status==='completed'||done.hidden){try{await post({rating})}catch(_){}}};
+rate.onclick=async e=>{const b=e.target.closest('[data-r]');if(!b)return;rating=Number(b.dataset.r);rate.querySelectorAll('.face').forEach(f=>f.classList.toggle('on',f===b));if(lp.dataset.status==='completed'){try{await post({rating})}catch(_){}}};
 done.onclick=async()=>{
   done.disabled=true;done.textContent='Saving…';
   try{
@@ -36,7 +34,7 @@ done.onclick=async()=>{
     document.getElementById('celmsg').textContent=(s.goal_met?`Daily goal reached (${s.today_done}/${s.daily_goal}). `:`${s.today_done}/${s.daily_goal} lessons today. `)+`🔥 ${s.streak}-day streak · ⚡ ${s.xp} XP total.`;
     cel.classList.add('show');
     const pill=document.getElementById('statuspill');if(pill){pill.className='pill ok';pill.textContent='✓ Completed'}
-    const nx=document.getElementById('nextlink');if(nx)nx.classList.add('hl');
-  }catch(e){done.disabled=false;done.textContent='MARK COMPLETE';document.getElementById('fp').textContent='Could not save. Check your connection and try again.'}
+    const dc=document.getElementById('donecount');if(dc&&d.xp_gained){const [a,b]=dc.textContent.split('/').map(Number);dc.textContent=(a+1)+'/'+b}
+  }catch(e){done.disabled=false;done.textContent='Mark complete';document.getElementById('fp').textContent='Could not save. Check your connection and try again.'}
 };
 })();
