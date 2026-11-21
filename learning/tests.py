@@ -37,7 +37,7 @@ class CourseTests(TestCase):
         call_command('seed_python',verbosity=0)
         self.assertEqual(before,(Course.objects.count(),Chapter.objects.count(),Lesson.objects.count()))
     def test_safe_text_and_working_lesson(self):
-        lesson=self.chapter.lessons.first();lesson.explanation='<script>alert(1)</script>';lesson.save()
+        lesson=Lesson.objects.filter(blocks__isnull=True).first();lesson.explanation='<script>alert(1)</script>';lesson.save()
         r=self.client.get(f'/lessons/{lesson.id}/')
         self.assertContains(r,'&lt;script&gt;')
         self.assertNotContains(r,'<script>alert(1)</script>')
@@ -82,3 +82,75 @@ class AuthTests(TestCase):
         self.assertRedirects(r,'/account/',fetch_redirect_response=False)
     def test_logout_requires_post(self):
         self.assertEqual(self.client.get('/logout/').status_code,405)
+from .models import LessonBlock, LessonProgress, DailyActivity
+from . import progress as prog
+UID='11111111-1111-1111-1111-111111111111'
+class ProgressTests(TestCase):
+    def setUp(self):
+        call_command('seed_python',verbosity=0)
+        self.lesson=Lesson.objects.get(title='Understanding variables')
+    def login(self):
+        s=self.client.session;s['sb_user_id']=UID;s['sb_plan']='free';s.save()
+    def test_blocks_rendered_and_interactive_markup(self):
+        r=self.client.get(f'/lessons/{self.lesson.id}/')
+        self.assertContains(r,'blk-must');self.assertContains(r,'class="opt"');self.assertContains(r,'Log in to mark lessons complete')
+    def test_block_text_is_escaped(self):
+        LessonBlock.objects.create(lesson=self.lesson,position=99,block_type='text',body='<script>x</script>')
+        self.assertNotContains(self.client.get(f'/lessons/{self.lesson.id}/'),'<script>x</script>')
+    def test_unpublished_block_hidden(self):
+        LessonBlock.objects.create(lesson=self.lesson,position=99,block_type='text',body='SECRETDRAFT',is_published=False)
+        self.assertNotContains(self.client.get(f'/lessons/{self.lesson.id}/'),'SECRETDRAFT')
+    def test_open_marks_in_progress_then_complete_awards_xp_once(self):
+        self.login()
+        self.client.get(f'/lessons/{self.lesson.id}/')
+        self.assertEqual(LessonProgress.objects.get(user_id=UID).status,'in_progress')
+        url=f'/api/lessons/{self.lesson.id}/complete/'
+        d=self.client.post(url,{'rating':'5'}).json()
+        self.assertEqual(d['xp_gained'],prog.XP_PER_LESSON);self.assertEqual(d['stats']['streak'],1);self.assertEqual(d['stats']['today_done'],1)
+        self.assertEqual(self.client.post(url).json()['xp_gained'],0)
+        self.assertEqual(DailyActivity.objects.get(user_id=UID).xp,prog.XP_PER_LESSON)
+        self.assertEqual(LessonProgress.objects.get(user_id=UID).rating,5)
+    def test_complete_requires_login_and_post(self):
+        url=f'/api/lessons/{self.lesson.id}/complete/'
+        self.assertEqual(self.client.post(url).status_code,401);self.assertEqual(self.client.get(url).status_code,405)
+    def test_outline_progress_per_user(self):
+        self.login();self.client.post(f'/api/lessons/{self.lesson.id}/complete/')
+        d=self.client.get('/api/courses/python/outline/').json()
+        ch=next(c for s in d['sections'] for c in s['chapters'] if c['id']==str(self.lesson.chapter_id))
+        self.assertEqual(ch['lessons_done'],1);self.assertEqual(d['me']['lessons_done'],1);self.assertEqual(d['me']['last_read']['lesson_id'],str(self.lesson.id))
+        other=self.client.__class__()
+        self.assertNotIn('me',other.get('/api/courses/python/outline/').json())
+    def test_chapter_lessons_status(self):
+        self.login();self.client.post(f'/api/lessons/{self.lesson.id}/complete/')
+        rows=self.client.get(f'/api/chapters/{self.lesson.chapter_id}/lessons/').json()['lessons']
+        self.assertEqual({r['title']:r['status'] for r in rows}['Understanding variables'],'completed')
+    def test_streak_counts_consecutive_days(self):
+        from datetime import timedelta
+        from django.utils import timezone
+        t=timezone.localdate()
+        for n in (0,1,2,4): DailyActivity.objects.create(user_id=UID,day=t-timedelta(days=n),lessons_completed=1,xp=20)
+        self.assertEqual(prog.streak(UID),3)
+    def test_draft_lesson_staff_preview_only(self):
+        self.lesson.is_published=False;self.lesson.save()
+        self.assertEqual(self.client.get(f'/lessons/{self.lesson.id}/').status_code,404)
+        self.client.force_login(get_user_model().objects.create_superuser('s','s@e.com','pw-for-tests'))
+        r=self.client.get(f'/lessons/{self.lesson.id}/');self.assertContains(r,'Admin preview')
+        self.assertEqual(LessonProgress.objects.count(),0)
+@override_settings(SUPABASE_URL='https://x.supabase.co',SUPABASE_PUBLISHABLE_KEY='k')
+class GoogleTests(TestCase):
+    def test_start_redirects_with_pkce(self):
+        r=self.client.get('/auth/google/?next=/lessons/')
+        self.assertEqual(r.status_code,302)
+        self.assertIn('provider=google',r['Location']);self.assertIn('code_challenge_method=s256',r['Location'])
+        self.assertIn('sb_pkce',self.client.session)
+    def test_callback_logs_in(self):
+        self.client.get('/auth/google/')
+        with mock.patch.object(sb,'exchange_code',return_value=SESSION) as ex,mock.patch.object(sb,'get_profile',return_value={'plan':'free'}):
+            r=self.client.get('/auth/callback/?code=abc')
+        self.assertEqual(r.status_code,302);self.assertEqual(self.client.session['sb_user_id'],SESSION['user']['id'])
+        self.assertEqual(ex.call_args[0][0],'abc')
+    def test_callback_without_verifier_fails_safely(self):
+        r=self.client.get('/auth/callback/?code=abc');self.assertContains(r,'did not complete')
+        self.assertNotIn('sb_user_id',self.client.session)
+    def test_login_page_has_google_button(self):
+        self.assertContains(self.client.get('/login/'),'Continue with Google')

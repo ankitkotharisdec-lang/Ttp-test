@@ -72,3 +72,28 @@ def update_profile(user_id, token, **fields):
     rows = _request('PATCH', f'/rest/v1/profiles?id=eq.{user_id}', fields, token=token,
                     headers={'Prefer': 'return=representation'})
     return rows[0] if rows else None
+
+
+# ---- Google (OAuth, PKCE) ----
+import base64
+import hashlib
+import secrets
+import urllib.parse
+
+
+def new_pkce():
+    verifier = secrets.token_urlsafe(64)
+    challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b'=').decode()
+    return verifier, challenge
+
+
+def google_authorize_url(redirect_to, challenge):
+    if not settings.SUPABASE_URL:
+        raise SupabaseError('Sign-in is not configured yet.')
+    q = urllib.parse.urlencode({'provider': 'google', 'redirect_to': redirect_to,
+                                'code_challenge': challenge, 'code_challenge_method': 's256'})
+    return f'{settings.SUPABASE_URL}/auth/v1/authorize?{q}'
+
+
+def exchange_code(code, verifier):
+    return _request('POST', '/auth/v1/token?grant_type=pkce', {'auth_code': code, 'code_verifier': verifier})

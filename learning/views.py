@@ -7,25 +7,76 @@ from django.shortcuts import redirect
 from django.views.decorators.http import require_http_methods
 from django.utils.http import url_has_allowed_host_and_scheme
 from . import supabase_auth as sb
-from .models import Course,Section,Chapter,Lesson
+from . import progress
+from .models import Course,Section,Chapter,Lesson,LessonBlock,LessonProgress
 @require_GET
 def roadmap(request,slug='python'):
     course=get_object_or_404(Course,slug=slug,is_published=True)
     return render(request,'learning/roadmap.html',{'course':course})
+def _uid(request):
+    return request.session.get('sb_user_id')
 @require_GET
 def outline(request,slug):
     chapters=Chapter.objects.filter(is_published=True).annotate(lesson_count=Count('lessons',filter=Q(lessons__is_published=True))).order_by('position','id')
     sections=Section.objects.filter(is_published=True).prefetch_related(Prefetch('chapters',queryset=chapters,to_attr='published_chapters'))
     course=get_object_or_404(Course.objects.prefetch_related(Prefetch('sections',queryset=sections,to_attr='published_sections')),slug=slug,is_published=True)
-    return JsonResponse({'id':str(course.id),'title':course.title,'slug':course.slug,'sections':[{'id':str(s.id),'title':s.title,'position':s.position,'chapters':[{'id':str(c.id),'title':c.title,'position':c.position,'lesson_count':c.lesson_count} for c in s.published_chapters]} for s in course.published_sections]})
+    uid=_uid(request)
+    done={};started={}
+    if uid:
+        rows=LessonProgress.objects.filter(user_id=uid,lesson__is_published=True).values('lesson__chapter_id','status')
+        for r in rows:
+            d=done if r['status']=='completed' else started
+            d[r['lesson__chapter_id']]=d.get(r['lesson__chapter_id'],0)+1
+    def chap(c):
+        row={'id':str(c.id),'title':c.title,'position':c.position,'lesson_count':c.lesson_count}
+        if uid: row.update(lessons_done=done.get(c.id,0),lessons_started=started.get(c.id,0))
+        return row
+    data={'id':str(course.id),'title':course.title,'slug':course.slug,'sections':[{'id':str(s.id),'title':s.title,'position':s.position,'chapters':[chap(c) for c in s.published_chapters]} for s in course.published_sections],'logged_in':bool(uid)}
+    if uid:
+        total=sum(c['lesson_count'] for s in data['sections'] for c in s['chapters'])
+        got=sum(c['lessons_done'] for s in data['sections'] for c in s['chapters'])
+        data['me']=dict(progress.stats(uid),last_read=progress.last_read(uid),lessons_total=total,lessons_done=got,mastery=round(100*got/total) if total else 0,plan=request.session.get('sb_plan','free'))
+    return JsonResponse(data)
 @require_GET
 def chapter_lessons(request,chapter_id):
     chapter=get_object_or_404(Chapter,id=chapter_id,is_published=True,section__is_published=True,section__course__is_published=True)
-    return JsonResponse({'id':str(chapter.id),'title':chapter.title,'lessons':list(chapter.lessons.filter(is_published=True).values('id','title','position'))})
+    smap=progress.status_map(_uid(request)) if _uid(request) else {}
+    rows=[{'id':l['id'],'title':l['title'],'position':l['position'],'status':smap.get(l['id'],'new') if smap or _uid(request) else 'new'} for l in chapter.lessons.filter(is_published=True).values('id','title','position')]
+    for r in rows: r['id']=str(r['id']);r['url']=f"/lessons/{r['id']}/"
+    return JsonResponse({'id':str(chapter.id),'title':chapter.title,'lessons':rows})
+def _published_lesson(request,lesson_id):
+    qs=Lesson.objects.select_related('chapter__section__course')
+    if request.user.is_authenticated and request.user.is_staff:
+        return get_object_or_404(qs,id=lesson_id),True  # staff can preview drafts
+    return get_object_or_404(qs,id=lesson_id,is_published=True,chapter__is_published=True,chapter__section__is_published=True,chapter__section__course__is_published=True),False
 @require_GET
 def lesson_detail(request,lesson_id):
-    lesson=get_object_or_404(Lesson,id=lesson_id,is_published=True,chapter__is_published=True,chapter__section__is_published=True,chapter__section__course__is_published=True)
-    return render(request,'learning/lesson.html',{'lesson':lesson})
+    lesson,preview=_published_lesson(request,lesson_id)
+    uid=_uid(request)
+    status='new'
+    if uid and not preview:
+        status=progress.mark_started(uid,lesson).status
+    blocks=lesson.blocks.all() if preview else lesson.blocks.filter(is_published=True)
+    order=progress.ordered_lessons(lesson.chapter.section.course)
+    ids=[l.id for l in order]
+    i=ids.index(lesson.id) if lesson.id in ids else -1
+    ctx={'lesson':lesson,'blocks':list(blocks),'preview':preview,'status':status,'logged_in':bool(uid),
+         'prev':order[i-1] if i>0 else None,'next':order[i+1] if 0<=i<len(order)-1 else None,
+         'position':i+1 if i>=0 else None,'total':len(order),'me':progress.stats(uid) if uid else None}
+    return render(request,'learning/lesson.html',ctx)
+@require_http_methods(['POST'])
+def complete_lesson(request,lesson_id):
+    uid=_uid(request)
+    if not uid: return JsonResponse({'error':'login_required'},status=401)
+    lesson,preview=_published_lesson(request,lesson_id)
+    if preview: return JsonResponse({'error':'preview'},status=400)
+    try: rating=int(request.POST.get('rating',''))
+    except ValueError: rating=None
+    _,xp=progress.mark_completed(uid,lesson,rating)
+    order=progress.ordered_lessons(lesson.chapter.section.course)
+    ids=[l.id for l in order];i=ids.index(lesson.id) if lesson.id in ids else -1
+    nxt=order[i+1] if 0<=i<len(order)-1 else None
+    return JsonResponse({'xp_gained':xp,'stats':progress.stats(uid),'next_url':nxt.get_absolute_url() if nxt else None,'next_title':nxt.title if nxt else None})
 
 def _start_session(request,data,profile=None):
     user=data['user']
@@ -117,3 +168,30 @@ def account(request):
     request.session['sb_plan']=(profile or {}).get('plan','free')
     ctx['profile']=profile or {}
     return render(request,'learning/account.html',ctx)
+
+@require_GET
+def google_start(request):
+    verifier,challenge=sb.new_pkce()
+    request.session['sb_pkce']=verifier
+    request.session['sb_next']=_safe_next(request)
+    try:
+        url=sb.google_authorize_url(request.build_absolute_uri('/auth/callback/'),challenge)
+    except sb.SupabaseError as e:
+        return render(request,'learning/auth.html',{'mode':'login','error':e.message})
+    return redirect(url)
+@require_GET
+def auth_callback(request):
+    verifier=request.session.pop('sb_pkce',None)
+    nxt=request.session.pop('sb_next','/account/')
+    code=request.GET.get('code')
+    if not code or not verifier:
+        msg=request.GET.get('error_description') or 'Google sign-in did not complete. Please try again.'
+        return render(request,'learning/auth.html',{'mode':'login','error':msg})
+    try:
+        data=sb.exchange_code(code,verifier)
+        try: profile=sb.get_profile(data['user']['id'],data['access_token'])
+        except sb.SupabaseError: profile=None
+    except sb.SupabaseError as e:
+        return render(request,'learning/auth.html',{'mode':'login','error':e.message})
+    _start_session(request,data,profile)
+    return redirect(nxt if url_has_allowed_host_and_scheme(nxt,allowed_hosts={request.get_host()}) else '/account/')
