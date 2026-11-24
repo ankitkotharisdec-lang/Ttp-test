@@ -1,0 +1,40 @@
+{% load static rich %}
+<section class="python-practice" aria-labelledby="practice-title-{{ b.id }}"
+         data-worker="{% static 'learning/python_worker.js' %}"
+         data-sandbox="{% static 'learning/python_sandbox.html' %}"
+         data-expected="{{ b.explanation }}">
+    <h3 id="practice-title-{{ b.id }}">{{ b.title|default:'Practice' }}</h3>
+    <div class="practice-prompt">{{ b.body|rich }}</div>
+    <div class="practice-panes">
+        <div class="practice-pane">
+            <label for="practice-code-{{ b.id }}">Python editor</label>
+            <textarea id="practice-code-{{ b.id }}" class="practice-code" spellcheck="false"
+                      autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" maxlength="16000">
+{{ b.code }}</textarea>
+        </div>
+        <div class="practice-pane">
+            <span id="practice-output-{{ b.id }}">Output</span>
+            <pre class="practice-output" aria-labelledby="practice-output-{{ b.id }}" tabindex="0">Run your code to see the output.</pre>
+        </div>
+    </div>
+    <div class="practice-actions">
+        <button class="practice-run" type="button" aria-keyshortcuts="Control+Enter Meta+Enter">Run code</button>
+        {% if b.explanation %}<button class="practice-check" type="button">Check answer</button>{% endif %}
+        <button class="practice-reset" type="button">Reset code</button>
+        <button class="practice-stop" type="button" hidden>Stop</button>
+    </div>
+    <p class="practice-status" role="status"></p>
+    {% if b.explanation %}
+    <details class="practice-answer practice-expected" hidden>
+        <summary>Expected output</summary>
+        <pre>{{ b.explanation }}</pre>
+    </details>
+    {% endif %}
+    {% if b.options %}
+    <details class="practice-answer">
+        <summary>Reference solution</summary>
+        <pre><code>{{ b.options }}</code></pre>
+    </details>
+    {% endif %}
+    <noscript><p>Enable JavaScript to run Python in this editor.</p></noscript>
+</section>

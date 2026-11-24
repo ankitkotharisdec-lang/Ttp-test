@@ -1,0 +1,30 @@
+{% load rich %}
+<section class="blk lesson-trace" data-code-trace>
+  <header class="trace-header">
+    <div>
+      <h3>{{ b.title|default:"Code walkthrough" }}</h3>
+      {% if b.body %}{{ b.body|rich }}{% endif %}
+    </div>
+    <div class="trace-controls" hidden>
+      <button type="button" data-trace-back>Back</button>
+      <button type="button" data-trace-play>Play</button>
+      <button type="button" data-trace-next>Next step</button>
+    </div>
+  </header>
+  <div class="trace-grid">
+    <div class="trace-pane">
+      <div class="trace-pane-heading"><h4>Python</h4><button type="button" data-trace-copy hidden>Copy</button></div>
+      <pre aria-label="Example code"><code>{% for line in b.code_lines %}<span data-trace-line="{{ forloop.counter }}"><span aria-hidden="true">{{ forloop.counter }}</span><span class="trace-code-text">{{ line }}</span></span>{% endfor %}</code></pre>
+    </div>
+    <div class="trace-pane trace-result">
+      <h4>Output</h4>
+      <pre data-trace-output>{{ b.explanation }}</pre>
+      <div class="trace-state" data-trace-state hidden></div>
+    </div>
+  </div>
+  <div class="trace-detail" aria-live="polite" hidden>
+    <small data-trace-counter></small>
+    <p data-trace-caption></p>
+  </div>
+  <div data-trace-data hidden>{{ b.trace_frames|json_script }}</div>
+</section>

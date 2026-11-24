@@ -37,7 +37,10 @@ class CourseTests(TestCase):
         call_command('seed_python',verbosity=0)
         self.assertEqual(before,(Course.objects.count(),Chapter.objects.count(),Lesson.objects.count()))
     def test_safe_text_and_working_lesson(self):
-        lesson=Lesson.objects.filter(blocks__isnull=True).first();lesson.explanation='<script>alert(1)</script>';lesson.save()
+        lesson = Lesson.objects.create(
+            chapter=self.chapter, title='Legacy lesson', is_published=True,
+            explanation='<script>alert(1)</script>',
+        )
         r=self.client.get(f'/lessons/{lesson.id}/')
         self.assertContains(r,'&lt;script&gt;')
         self.assertNotContains(r,'<script>alert(1)</script>')

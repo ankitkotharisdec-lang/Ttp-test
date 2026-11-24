@@ -1,3 +1,4 @@
+import json
 import uuid
 from django.conf import settings
 from django.db import models
@@ -52,7 +53,9 @@ class Lesson(OrderedContent):
 class LessonBlock(models.Model):
     """One piece of lesson content. Admins stack blocks to build a lesson: text, Must Know box, highlight, example, code, video."""
     TEXT,MUST_KNOW,HIGHLIGHT,EXAMPLE,CODE,VIDEO,SUMMARY='text','must_know','highlight','example','code','video','summary'
-    TYPES=[(TEXT,'Text paragraph'),(MUST_KNOW,'Must Know box'),(HIGHLIGHT,'Highlighted text'),(EXAMPLE,'Example (practice question)'),(CODE,'Code example'),(VIDEO,'Video'),(SUMMARY,'Summary / key takeaways')]
+    TRACE, PRACTICE, IMAGE, DIAGRAM = 'trace', 'practice', 'image', 'diagram'
+    TYPES=[(TEXT,'Text paragraph'),(MUST_KNOW,'Must Know box'),(HIGHLIGHT,'Highlighted text'),(EXAMPLE,'Example (practice question)'),(CODE,'Code example'),(VIDEO,'Video'),(SUMMARY,'Summary / key takeaways'),
+           (TRACE, 'Code walkthrough'), (PRACTICE, 'Python exercise'), (IMAGE, 'Image or GIF'), (DIAGRAM, 'Flow diagram')]
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     lesson=models.ForeignKey(Lesson,on_delete=models.CASCADE,related_name='blocks')
     position=models.PositiveIntegerField(default=1)
@@ -60,7 +63,7 @@ class LessonBlock(models.Model):
     title=models.CharField(max_length=200,blank=True,help_text='Optional heading. For Example blocks this is the label, e.g. "Example 1".')
     body=models.TextField(blank=True,help_text='The text. Blank lines make new paragraphs. For Example blocks this is the question.')
     code=models.TextField(blank=True,help_text='Python code shown in a code box.')
-    video_url=models.URLField(blank=True,help_text='YouTube or other video link.')
+    video_url=models.CharField(max_length=200,blank=True,help_text='Video or image URL.')
     options=models.TextField(blank=True,help_text='Example blocks only: one answer choice per line.')
     correct_option=models.PositiveIntegerField(default=0,help_text='Example blocks only: number of the correct choice (1 = first line).')
     explanation=models.TextField(blank=True,help_text='Example blocks only: shown after the student answers.')
@@ -73,6 +76,26 @@ class LessonBlock(models.Model):
     def __str__(self): return f'{self.get_block_type_display()}: {self.title or self.body[:40]}'
     @property
     def option_list(self): return [o.strip() for o in self.options.splitlines() if o.strip()]
+    def _structured_options(self):
+        try:
+            items = json.loads(self.options)
+        except ValueError:
+            return []
+        return items if isinstance(items, list) else []
+
+    @property
+    def trace_frames(self):
+        return [item for item in self._structured_options() if isinstance(item, dict)]
+
+    @property
+    def diagram_labels(self):
+        return [item for item in self._structured_options() if isinstance(item, str)]
+
+    @property
+    def code_lines(self):
+        return self.code.splitlines()
+
+
 class LessonProgress(models.Model):
     IN_PROGRESS,COMPLETED='in_progress','completed'
     id=models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
@@ -98,3 +121,28 @@ class DailyActivity(models.Model):
         db_table='daily_activity'
         managed=MANAGED
         constraints=[models.UniqueConstraint(fields=['user_id','day'],name='daily_activity_user_day_uniq')]
+
+
+class LessonAnnotation(models.Model):
+    """An account's bookmark or selected passage on a published lesson."""
+
+    BOOKMARK = 'bookmark'
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user_id = models.UUIDField()
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='annotations')
+    signature = models.CharField(max_length=64)
+    block_key = models.CharField(max_length=100, blank=True)
+    start = models.PositiveIntegerField(default=0)
+    end = models.PositiveIntegerField(default=0)
+    quote = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'learning_lesson_annotations'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user_id', 'lesson', 'signature'], name='lesson_annotation_user_key_uniq'
+            ),
+        ]
+        ordering = ['-created_at', 'id']

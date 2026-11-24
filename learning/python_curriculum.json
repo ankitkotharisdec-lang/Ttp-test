@@ -1,0 +1,2168 @@
+[
+  {
+    "id": "introduction",
+    "title": "Introduction to Python",
+    "summary": "Set up Python and run your first data-processing script.",
+    "lessons": [
+      {
+        "id": "what-is-python",
+        "title": "What is Python?",
+        "explanation": [
+          "Python is a programming language used to automate repeatable work. A data engineering job often reads data from one place, reshapes or validates it, and writes it somewhere another system can use.",
+          "The extract, transform, load pattern is often called ETL. An orders pipeline might read prices from a CSV file, turn their text values into numbers, and write valid records to a database.",
+          "The in-page editor runs Python in your browser. The following setup lesson shows how to run the same language on your computer."
+        ],
+        "summary": "Python can read, transform, and write data in repeatable steps.",
+        "example": {
+          "code": "raw_count = \"12\"\ncount = int(raw_count)\nprint(count + 3)",
+          "output": "15",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Read a count as text, as a CSV reader would.",
+              "state": "raw_count = \"12\"",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Convert numeric text into an integer.",
+              "state": "count = 12",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Add three new rows and print the total.",
+              "state": "count = 12",
+              "output": "15"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Turn raw_count into an integer, add 2, and print the result.",
+          "starter": "raw_count = \"8\"\n# Convert the value and print the new total.",
+          "expected": "10",
+          "solution": "raw_count = \"8\"\nprint(int(raw_count) + 2)"
+        },
+        "diagram": [
+          "Extract raw rows",
+          "Transform values",
+          "Load clean rows"
+        ]
+      },
+      {
+        "id": "install-python",
+        "title": "Installing Python",
+        "explanation": [
+          "Install a supported Python 3 release from python.org. In your terminal, use `python3 --version` on macOS or Linux, or `py -3 --version` on Windows to verify that the terminal can find it. Some systems use `python --version` instead.",
+          "From your project folder, create a virtual environment with `python3 -m venv .venv` on macOS or Linux, or `py -3 -m venv .venv` on Windows. The environment keeps project dependencies separate.",
+          "Activate with `source .venv/bin/activate` on macOS or Linux, or `.\\.venv\\Scripts\\Activate.ps1` in Windows PowerShell. If activation is unavailable, run the environment interpreter directly using `.venv/bin/python` or `.\\.venv\\Scripts\\python.exe`.",
+          "With the environment active, run `python -m pip --version` to check that pip belongs to the same interpreter. Use `deactivate` when you finish."
+        ],
+        "summary": "Check your interpreter version and create one virtual environment per project.",
+        "example": {
+          "code": "import sys\nprint(sys.version_info.major)",
+          "output": "3",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Import information about the running interpreter.",
+              "state": "sys module is available",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Print the interpreter's major version. Python 3 prints 3.",
+              "state": "major = 3",
+              "output": "3"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "In the browser editor, print Python ready. On your computer, check the version in your terminal.",
+          "starter": "# Print a short confirmation.",
+          "expected": "Python ready",
+          "solution": "print(\"Python ready\")"
+        },
+        "diagram": [
+          "Install Python 3",
+          "Verify in terminal",
+          "Create .venv",
+          "Run your script"
+        ]
+      },
+      {
+        "id": "first-program",
+        "title": "Your first program",
+        "explanation": [
+          "A Python script is a text file that ends in .py. Save the example as `hello.py`, then run `python hello.py` from its folder with your virtual environment active.",
+          "Python reads these statements from top to bottom. The assignment gives a value a name, and `print()` sends a message to standard output. The browser editor displays that output beside the code.",
+          "If Python reports an error, start with its last line and use the line number to find the expression that failed."
+        ],
+        "summary": "A script runs statements in order and can print a result to the terminal.",
+        "example": {
+          "code": "rows = 4\nprint(\"Rows loaded:\", rows)",
+          "output": "Rows loaded: 4",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Assign the number of rows to a variable.",
+              "state": "rows = 4",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Print a label and the value. print adds a space between arguments.",
+              "state": "rows = 4",
+              "output": "Rows loaded: 4"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Set rows to 7 and print Rows loaded: 7 using the variable.",
+          "starter": "rows = 0\n# Print the message here.",
+          "expected": "Rows loaded: 7",
+          "solution": "rows = 7\nprint(\"Rows loaded:\", rows)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "types-operators",
+    "title": "Data Types and Operators",
+    "summary": "Represent, clean, compare, and calculate with individual data values.",
+    "lessons": [
+      {
+        "id": "variables",
+        "title": "Understanding variables",
+        "explanation": [
+          "An assignment evaluates the expression on the right of `=` and binds its result to the name on the left. A later assignment can give the same name a new value.",
+          "Use names such as `rows_loaded` or `file_name` that describe the data. Python names are case-sensitive, and the usual style for variables is lowercase words joined by underscores.",
+          "A counter assignment such as `rows_loaded = rows_loaded + 3` uses the old count to calculate the next count."
+        ],
+        "summary": "Variables name values, and reassignment can update a running count.",
+        "example": {
+          "code": "rows_loaded = 10\nrows_loaded = rows_loaded + 3\nprint(rows_loaded)",
+          "output": "13",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Start the counter at ten.",
+              "state": "rows_loaded = 10",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Read the old count, add three, and replace the old value.",
+              "state": "rows_loaded = 13",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Print the updated counter.",
+              "state": "rows_loaded = 13",
+              "output": "13"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Start rows_loaded at 20, add 5, and print the updated value.",
+          "starter": "rows_loaded = 20\n# Add five and print the count.",
+          "expected": "25",
+          "solution": "rows_loaded = 20\nrows_loaded += 5\nprint(rows_loaded)"
+        }
+      },
+      {
+        "id": "scalar-types",
+        "title": "Numbers and strings",
+        "explanation": [
+          "Use `int` for row counts, `float` for many approximate decimal measurements, and `str` for text such as paths and IDs. Keep an ID like `007` as text when its leading zeros matter.",
+          "A `bool` is either `True` or `False`. Use `None` to represent a missing value. Zero, an empty string, and a missing value can mean different things in a dataset.",
+          "Use `type(value).__name__` when you need to inspect a value's type while learning or debugging."
+        ],
+        "summary": "Choose types that preserve the meaning and format of each field.",
+        "example": {
+          "code": "row_count = 12\nbatch_id = \"007\"\nis_valid = True\nloaded_at = None\nprint(type(row_count).__name__, type(batch_id).__name__)\nprint(type(is_valid).__name__, type(loaded_at).__name__)",
+          "output": "int str\nbool NoneType",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "A whole number literal has type int.",
+              "state": "row_count = 12",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Quotes make the ID text and preserve its leading zeros.",
+              "state": "batch_id = \"007\"",
+              "output": ""
+            },
+            {
+              "line": 5,
+              "caption": "Inspect the count and batch ID types.",
+              "state": "count type = int, ID type = str",
+              "output": "int str"
+            },
+            {
+              "line": 6,
+              "caption": "Inspect a Boolean and a missing value.",
+              "state": "is_valid = True, loaded_at = None",
+              "output": "int str\nbool NoneType"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Print the type names of size_mb and file_name on one line.",
+          "starter": "size_mb = 2.5\nfile_name = \"orders.csv\"\n# Print both type names.",
+          "expected": "float str",
+          "solution": "size_mb = 2.5\nfile_name = \"orders.csv\"\nprint(type(size_mb).__name__, type(file_name).__name__)"
+        }
+      },
+      {
+        "id": "type-conversion",
+        "title": "Type conversion",
+        "explanation": [
+          "CSV fields usually arrive as strings even when they contain digits. Use `int()` for whole number text, `float()` for decimal text, and `str()` when you need a textual representation.",
+          "Use `.strip()` to remove surrounding whitespace. Invalid numeric text such as `unknown` raises `ValueError`. Handle that explicitly when you learn validation.",
+          "Convert fields at the edge of a pipeline so the rest of your calculations can work with consistent types."
+        ],
+        "summary": "Convert incoming fields deliberately before using them in calculations.",
+        "example": {
+          "code": "raw_units = \" 12 \"\nunits = int(raw_units.strip())\nprint(units + 3)",
+          "output": "15",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "The incoming field is a string with surrounding spaces.",
+              "state": "raw_units = \" 12 \"",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Strip surrounding spaces and convert the digits to a whole number.",
+              "state": "units = 12",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Add the new units numerically.",
+              "state": "units + 3 = 15",
+              "output": "15"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Convert raw_units to an integer, double it, and print the result.",
+          "starter": "raw_units = \" 9 \"\n# Convert, double, and print.",
+          "expected": "18",
+          "solution": "raw_units = \" 9 \"\nprint(int(raw_units.strip()) * 2)"
+        }
+      },
+      {
+        "id": "operators",
+        "title": "Arithmetic and comparison operators",
+        "explanation": [
+          "Use `+`, `-`, `*`, and `/` for arithmetic. With nonnegative integers, `//` counts complete groups and `%` gives the remainder. Parentheses make the order of operations explicit.",
+          "Comparisons such as `==`, `!=`, `<`, and `>=` produce Boolean values. Use `and`, `or`, and `not` to combine or negate checks.",
+          "For example, a loader grouping 23 rows into batches of ten can send two complete batches, then one final partial batch."
+        ],
+        "summary": "Use arithmetic to calculate values and comparisons to test them.",
+        "example": {
+          "code": "rows, batch_size = 23, 10\nfull_batches = rows // batch_size\nspare_rows = rows % batch_size\nprint(full_batches, spare_rows)\nprint(spare_rows > 0)",
+          "output": "2 3\nTrue",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Integer division gives the number of complete batches.",
+              "state": "full_batches = 2",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "The remainder is the number of unbatched rows.",
+              "state": "spare_rows = 3",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Print the complete batch count and remainder.",
+              "state": "full_batches = 2, spare_rows = 3",
+              "output": "2 3"
+            },
+            {
+              "line": 5,
+              "caption": "Compare the remainder with zero to check for a partial batch.",
+              "state": "spare_rows > 0 is True",
+              "output": "2 3\nTrue"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "For 35 rows and batches of 8, print the number of full batches followed by the remaining row count.",
+          "starter": "rows = 35\nbatch_size = 8\n# Print the two counts on one line.",
+          "expected": "4 3",
+          "solution": "rows = 35\nbatch_size = 8\nprint(rows // batch_size, rows % batch_size)"
+        }
+      },
+      {
+        "id": "string-indexing",
+        "title": "Indexing",
+        "explanation": [
+          "An index selects a single character. Python counts from zero, so `value[0]` selects the first character and `value[-1]` selects the last.",
+          "Indexing outside the string raises `IndexError`. Check that a string is nonempty before reading a character when its length can vary."
+        ],
+        "summary": "Indexes start at zero and negative indexes count from the end.",
+        "example": {
+          "code": "batch_code = \"B704\"\nprint(batch_code[0])\nprint(batch_code[-1])",
+          "output": "B\n4",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Index 0 selects the first character.",
+              "state": "character = B",
+              "output": "B"
+            },
+            {
+              "line": 3,
+              "caption": "Index -1 selects the last character.",
+              "state": "character = 4",
+              "output": "B\n4"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Print the first and last characters of source on one line.",
+          "starter": "source = \"orders\"\n# Print both characters.",
+          "expected": "o s",
+          "solution": "source = \"orders\"\nprint(source[0], source[-1])"
+        }
+      },
+      {
+        "id": "string-slicing",
+        "title": "Slicing",
+        "explanation": [
+          "A slice selects a section of text. In `value[start:stop]` the start index is included and the stop index is excluded.",
+          "Omit the start to begin at the first character, or the stop to continue to the end. A slice is useful for a known fixed-width format such as a year at the beginning of a date."
+        ],
+        "summary": "Slices include the start and stop before the end index.",
+        "example": {
+          "code": "partition_key = \"2026-11-24\"\nprint(partition_key[:4])\nprint(partition_key[5:7])",
+          "output": "2026\n11",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Read indexes 0 through 3 for the year.",
+              "state": "year = 2026",
+              "output": "2026"
+            },
+            {
+              "line": 3,
+              "caption": "Read indexes 5 and 6 for the month.",
+              "state": "month = 11",
+              "output": "2026\n11"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Print the YYYY-MM part of partition_key.",
+          "starter": "partition_key = \"2025-03-18\"\n# Slice off the day.",
+          "expected": "2025-03",
+          "solution": "partition_key = \"2025-03-18\"\nprint(partition_key[:7])"
+        }
+      },
+      {
+        "id": "string-methods",
+        "title": "String methods",
+        "explanation": [
+          "Strings are immutable. A method such as `.strip()`, `.lower()`, or `.replace()` returns a new string, so assign the result when you want to keep it.",
+          "Normalize fields like column headers and status codes before checking them. Preserve the raw field separately when it is useful for audits or debugging."
+        ],
+        "summary": "String methods return new values you can chain and store.",
+        "example": {
+          "code": "raw_header = \"  Order ID  \"\nclean_header = raw_header.strip().lower().replace(\" \", \"_\")\nprint(clean_header)",
+          "output": "order_id",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Keep the raw header as received.",
+              "state": "raw_header = \"  Order ID  \"",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Trim outside whitespace, lowercase the text, then replace interior spaces.",
+              "state": "clean_header = \"order_id\"",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Print the normalized header.",
+              "state": "raw_header is unchanged",
+              "output": "order_id"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Normalize raw_header by trimming it, lowercasing it, and replacing spaces with underscores. Print the result.",
+          "starter": "raw_header = \"  Customer Name  \"\n# Normalize and print.",
+          "expected": "customer_name",
+          "solution": "raw_header = \"  Customer Name  \"\nprint(raw_header.strip().lower().replace(\" \", \"_\"))"
+        }
+      }
+    ],
+    "legacy_title": "Variables and Data Types"
+  },
+  {
+    "id": "lists",
+    "title": "Lists",
+    "summary": "Store ordered batches and add, read, update, remove, and transform their items.",
+    "lessons": [
+      {
+        "id": "create-read-lists",
+        "title": "Creating lists",
+        "explanation": [
+          "A list stores an ordered, mutable collection. Use square brackets to create it. A list can be empty, contain repeated values, or hold other collections.",
+          "Use `rows[0]` to read a single item and `rows[1:3]` to read a slice. Use `len(rows)` to count the items and `value in rows` to check membership.",
+          "A slice makes a new list containing references to the selected items. If those items are mutable records, the original and sliced lists still refer to the same records."
+        ],
+        "summary": "Lists preserve order. An index reads one item and a slice reads a range.",
+        "example": {
+          "code": "rows = [\"A12\", \"A13\", \"A14\"]\nprint(rows[0])\nprint(rows[1:3])\nprint(len(rows))",
+          "output": "A12\n['A13', 'A14']\n3",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Create an ordered list of three batch IDs.",
+              "state": "[A12, A13, A14]",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Read index 0 for the first ID.",
+              "state": "rows[0] = A12",
+              "output": "A12"
+            },
+            {
+              "line": 3,
+              "caption": "Read indexes 1 and 2 as a new list.",
+              "state": "slice = [A13, A14]",
+              "output": "A12\n['A13', 'A14']"
+            },
+            {
+              "line": 4,
+              "caption": "Count the list items.",
+              "state": "len(rows) = 3",
+              "output": "A12\n['A13', 'A14']\n3"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Print the first batch ID, then print a list containing the final two IDs.",
+          "starter": "batches = [\"A\", \"B\", \"C\"]\n# Print the first item and the last two items.",
+          "expected": "A\n['B', 'C']",
+          "solution": "batches = [\"A\", \"B\", \"C\"]\nprint(batches[0])\nprint(batches[-2:])"
+        },
+        "diagram": [
+          "Index 0 → A12",
+          "Index 1 → A13",
+          "Index 2 → A14"
+        ]
+      },
+      {
+        "id": "append-extend-insert",
+        "title": "List methods",
+        "explanation": [
+          "`append(value)` adds one item at the end. `extend(values)` iterates over its input and adds the items individually. `insert(index, value)` places one item before the given index.",
+          "Appending `[\"A14\", \"A15\"]` adds an inner list as a single item. Extending with the same argument adds two IDs. Choose the method based on the shape you want.",
+          "These methods change the list in place and return `None`. Call the method on the list directly and keep using the same list name."
+        ],
+        "summary": "Use append for one item, extend for many items, and insert for a given position.",
+        "example": {
+          "code": "batches = [\"A12\"]\nbatches.append(\"A13\")\nbatches.extend([\"A14\", \"A15\"])\nbatches.insert(0, \"A11\")\nprint(batches)",
+          "output": "['A11', 'A12', 'A13', 'A14', 'A15']",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Start with one batch ID.",
+              "state": "[A12]",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "append adds one slot at the end.",
+              "state": "[A12, A13]",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "extend adds A14 and A15 in separate slots.",
+              "state": "[A12, A13, A14, A15]",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "insert places A11 before the current index 0.",
+              "state": "[A11, A12, A13, A14, A15]",
+              "output": ""
+            },
+            {
+              "line": 5,
+              "caption": "Print the list after all three changes.",
+              "state": "[A11, A12, A13, A14, A15]",
+              "output": "['A11', 'A12', 'A13', 'A14', 'A15']"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Append B to batches, extend it with C and D, and print the list.",
+          "starter": "batches = [\"A\"]\n# Add B, C, and D.",
+          "expected": "['A', 'B', 'C', 'D']",
+          "solution": "batches = [\"A\"]\nbatches.append(\"B\")\nbatches.extend([\"C\", \"D\"])\nprint(batches)"
+        },
+        "diagram": [
+          "Start · [A12]",
+          "append(A13)",
+          "Result · [A12, A13]"
+        ]
+      },
+      {
+        "id": "update-remove-lists",
+        "title": "Updating and removing list items",
+        "explanation": [
+          "Assign to an index to replace a value. `pop(index)` removes and returns the item at that position. `pop()` uses the last position.",
+          "`remove(value)` deletes the first matching value and raises `ValueError` if the value is missing. Use membership to check before removing an optional item.",
+          "Removal shifts later indexes. Build a new filtered list when you need to exclude several items, especially if you are already looping over the original."
+        ],
+        "summary": "Replace by index, remove by value, or pop by index when you also need the removed value.",
+        "example": {
+          "code": "statuses = [\"ready\", \"qeuued\", \"cancelled\"]\nstatuses[1] = \"queued\"\nremoved = statuses.pop(2)\nprint(statuses)\nprint(removed)",
+          "output": "['ready', 'queued']\ncancelled",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Replace the misspelled status at index 1.",
+              "state": "[ready, queued, cancelled]",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Remove index 2 and save its old value.",
+              "state": "statuses = [ready, queued], removed = cancelled",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Print the updated list.",
+              "state": "statuses = [ready, queued]",
+              "output": "['ready', 'queued']"
+            },
+            {
+              "line": 5,
+              "caption": "Print the value returned by pop.",
+              "state": "removed = cancelled",
+              "output": "['ready', 'queued']\ncancelled"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Replace raw at index 0 with clean, remove the first skip by value, and print batches.",
+          "starter": "batches = [\"raw\", \"skip\", \"keep\"]\n# Update, remove, then print the list.",
+          "expected": "['clean', 'keep']",
+          "solution": "batches = [\"raw\", \"skip\", \"keep\"]\nbatches[0] = \"clean\"\nbatches.remove(\"skip\")\nprint(batches)"
+        }
+      },
+      {
+        "id": "list-comprehensions",
+        "title": "Filtering and transforming a list",
+        "explanation": [
+          "A list comprehension builds a new list. Read `[value * 2 for value in values if value > 0]` as, for each value, keep it if it is positive and save its doubled value.",
+          "Use a comprehension for a concise, single transformation. A regular loop is clearer when each item needs several steps, error handling, or logging.",
+          "This example keeps positive counts. In a pipeline, choose a filter based on the rules for your actual data."
+        ],
+        "summary": "A comprehension can filter and transform items into a new list.",
+        "example": {
+          "code": "counts = [5, 0, -1, 9]\nvalid_counts = [count for count in counts if count > 0]\nprint(valid_counts)",
+          "output": "[5, 9]",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Start with four counts in source order.",
+              "state": "[5, 0, -1, 9]",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Evaluate the condition once per count. Keep 5 and 9.",
+              "state": "valid_counts = [5, 9]",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Print the filtered list. The original list still contains four items.",
+              "state": "valid_counts = [5, 9]",
+              "output": "[5, 9]"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Use a list comprehension to trim and lowercase each header in raw_headers, then print the result.",
+          "starter": "raw_headers = [\" ID \", \"AMOUNT  \"]\n# Build and print clean_headers.",
+          "expected": "['id', 'amount']",
+          "solution": "raw_headers = [\" ID \", \"AMOUNT  \"]\nclean_headers = [header.strip().lower() for header in raw_headers]\nprint(clean_headers)"
+        }
+      }
+    ],
+    "legacy_title": "Lists and Tuples"
+  },
+  {
+    "id": "tuples-sets",
+    "title": "Tuples and Sets",
+    "summary": "Represent fixed records and remove duplicate values.",
+    "lessons": [
+      {
+        "id": "tuples",
+        "title": "Tuples",
+        "explanation": [
+          "A tuple is an ordered collection whose positions are fixed after creation. Write `(value,)` for a one-item tuple. The trailing comma makes it a tuple.",
+          "Read items by index, or unpack the elements into named variables. The number of targets must match the number of tuple items unless you use starred unpacking.",
+          "A tuple is a useful shape for an SQL parameter row or a composite key such as a country and date. A tuple can be a dictionary key if its members are all hashable."
+        ],
+        "summary": "Use tuples for ordered groups with fixed positions and unpack them to name fields.",
+        "example": {
+          "code": "partition = (\"IN\", \"2026-11-24\")\ncountry, date = partition\nprint(country)\nprint(date)",
+          "output": "IN\n2026-11-24",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Store a country and a date together.",
+              "state": "partition = (\"IN\", \"2026-11-24\")",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Unpack the first and second elements into named variables.",
+              "state": "country = IN, date = 2026-11-24",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Print the country part.",
+              "state": "country = IN",
+              "output": "IN"
+            },
+            {
+              "line": 4,
+              "caption": "Print the date part.",
+              "state": "date = 2026-11-24",
+              "output": "IN\n2026-11-24"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Unpack row into order_id and amount, then print both values on one line.",
+          "starter": "row = (\"X04\", 19)\n# Unpack and print the fields.",
+          "expected": "X04 19",
+          "solution": "row = (\"X04\", 19)\norder_id, amount = row\nprint(order_id, amount)"
+        }
+      },
+      {
+        "id": "sets",
+        "title": "Sets",
+        "explanation": [
+          "A set stores unique values and is useful for membership tests. Use `set()` to create an empty set. Empty braces create a dictionary.",
+          "`add(value)` inserts one member. `discard(value)` removes a member if present. Use `a & b` for intersection and `a - b` for the items in a that b lacks.",
+          "Sets do not preserve input order. Use `sorted()` to display them consistently. When deduplication must preserve the order of first appearance, use a list to store the result and a set to track what you have seen."
+        ],
+        "summary": "Use set operations for unique membership, overlap, and difference.",
+        "example": {
+          "code": "incoming = {\"A\", \"B\", \"C\"}\nprocessed = {\"A\", \"C\"}\npending = incoming - processed\npending.add(\"D\")\nprint(sorted(pending))",
+          "output": "['B', 'D']",
+          "steps": [
+            {
+              "line": 3,
+              "caption": "Subtract processed IDs from the incoming IDs.",
+              "state": "pending contains B",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Add the newly discovered batch.",
+              "state": "pending contains B and D",
+              "output": ""
+            },
+            {
+              "line": 5,
+              "caption": "Sort before displaying the result.",
+              "state": "sorted(pending) = [B, D]",
+              "output": "['B', 'D']"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Print a sorted list containing the unique source IDs.",
+          "starter": "source_ids = [\"B\", \"A\", \"B\", \"C\"]\n# Remove duplicates and sort.",
+          "expected": "['A', 'B', 'C']",
+          "solution": "source_ids = [\"B\", \"A\", \"B\", \"C\"]\nprint(sorted(set(source_ids)))"
+        },
+        "diagram": [
+          "Incoming · A, B, C",
+          "Subtract processed · A, C",
+          "Pending · B"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dictionaries",
+    "title": "Dictionaries",
+    "summary": "Use named fields, update records, and look up defaults safely.",
+    "lessons": [
+      {
+        "id": "create-read-dictionaries",
+        "title": "Key-value pairs",
+        "explanation": [
+          "A dictionary maps keys to values. Write a record with braces and pairs such as `{\"id\": \"A12\", \"amount\": 25}`. Keys are unique and values can be any type.",
+          "Use `record[\"id\"]` when the field is required. A missing key raises `KeyError`. Use `record.get(\"status\", \"pending\")` when you have a meaningful default.",
+          "A present key with a value of `None` stays `None` when you use `.get()`. Check key membership separately when missing and explicitly null mean different things."
+        ],
+        "summary": "Use key lookup to read a required field and get to supply a default for an optional field.",
+        "example": {
+          "code": "order = {\"id\": \"A12\", \"amount\": 25}\nprint(order[\"id\"])\nprint(order.get(\"status\", \"pending\"))",
+          "output": "A12\npending",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Create a record with two named fields.",
+              "state": "id = A12, amount = 25",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Look up the required ID.",
+              "state": "order['id'] = A12",
+              "output": "A12"
+            },
+            {
+              "line": 3,
+              "caption": "Use the fallback because status is absent.",
+              "state": "status = pending",
+              "output": "A12\npending"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Print customer_id, then print region using unknown when the key is missing.",
+          "starter": "row = {\"customer_id\": \"C8\"}\n# Print both fields on separate lines.",
+          "expected": "C8\nunknown",
+          "solution": "row = {\"customer_id\": \"C8\"}\nprint(row[\"customer_id\"])\nprint(row.get(\"region\", \"unknown\"))"
+        }
+      },
+      {
+        "id": "update-delete-dictionaries",
+        "title": "Dictionary methods",
+        "explanation": [
+          "Assigning to a key creates it if absent and replaces its value if present. Use `.update()` to apply several changes at once. It mutates the existing dictionary.",
+          "`pop(key, default)` removes a key and returns its value, or returns the default when that key is absent. Use `del record[key]` when the key must exist and you do not need its old value.",
+          "For a clean record, keep fields you need and remove temporary fields before sending downstream. Keep the raw record separate when you need it for diagnostics."
+        ],
+        "summary": "Set keys to create or update fields, and use pop when removing optional fields.",
+        "example": {
+          "code": "record = {\"id\": \"A12\", \"status\": \"raw\", \"note\": \"sample\"}\nrecord[\"status\"] = \"ready\"\nrecord[\"amount\"] = 25\nold_note = record.pop(\"note\", None)\nprint(record)\nprint(old_note)",
+          "output": "{'id': 'A12', 'status': 'ready', 'amount': 25}\nsample",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Replace the value for an existing key.",
+              "state": "status = ready",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Create a key and store its value.",
+              "state": "amount = 25",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Remove note and return the old text.",
+              "state": "old_note = sample",
+              "output": ""
+            },
+            {
+              "line": 5,
+              "caption": "Print the three remaining fields.",
+              "state": "note is absent",
+              "output": "{'id': 'A12', 'status': 'ready', 'amount': 25}"
+            },
+            {
+              "line": 6,
+              "caption": "Print the text returned by pop.",
+              "state": "old_note = sample",
+              "output": "{'id': 'A12', 'status': 'ready', 'amount': 25}\nsample"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Change status to ready, remove debug if it exists, and print the updated row.",
+          "starter": "row = {\"id\": \"B7\", \"status\": \"raw\", \"debug\": True}\n# Update status, remove debug, and print.",
+          "expected": "{'id': 'B7', 'status': 'ready'}",
+          "solution": "row = {\"id\": \"B7\", \"status\": \"raw\", \"debug\": True}\nrow[\"status\"] = \"ready\"\nrow.pop(\"debug\", None)\nprint(row)"
+        },
+        "diagram": [
+          "Read record",
+          "Update status",
+          "Add amount",
+          "Remove temporary note"
+        ]
+      },
+      {
+        "id": "nested-dictionaries",
+        "title": "Nested records and lookups",
+        "explanation": [
+          "A dictionary can contain other dictionaries or lists. To read a nested field, identify the shape at each level before applying the next key or index.",
+          "Successive lookups such as `row[\"customer\"][\"region\"]` require both keys to exist. If an optional inner record may be absent or null, use an empty dictionary before reading its optional fields.",
+          "The following pattern expects customer to be a dictionary, missing, or null. Validate the incoming type if your source can also return other values."
+        ],
+        "summary": "Work one level at a time and handle optional nested objects explicitly.",
+        "example": {
+          "code": "row = {\"id\": \"A12\", \"customer\": {\"region\": \"west\"}}\ncustomer = row.get(\"customer\") or {}\nregion = customer.get(\"region\", \"unknown\")\nprint(region)",
+          "output": "west",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Read the customer object or use an empty dictionary.",
+              "state": "customer = {'region': 'west'}",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Read the nested region with a default.",
+              "state": "region = west",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Print the value selected for this record.",
+              "state": "region = west",
+              "output": "west"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Read customer from row, treating None as an empty dictionary, then print region with the default unknown.",
+          "starter": "row = {\"id\": \"A13\", \"customer\": None}\n# Read the region safely and print it.",
+          "expected": "unknown",
+          "solution": "row = {\"id\": \"A13\", \"customer\": None}\ncustomer = row.get(\"customer\") or {}\nprint(customer.get(\"region\", \"unknown\"))"
+        }
+      }
+    ],
+    "legacy_title": "Dictionaries and Sets"
+  },
+  {
+    "id": "conditionals",
+    "title": "If, Elif, and Else",
+    "summary": "Route records by status, validate fields, and distinguish missing values from zero.",
+    "lessons": [
+      {
+        "id": "if-statements",
+        "title": "If statements",
+        "explanation": [
+          "An `if` statement runs an indented block when its condition is true. The colon ends the condition line. Use consistent indentation for each statement inside the block.",
+          "Comparisons produce Boolean values, and a condition can also use a Boolean variable directly. Use `==` to compare two values.",
+          "When there is no `else`, Python continues below the block if the condition is false."
+        ],
+        "summary": "Indent the statements that should run only when the condition is true.",
+        "example": {
+          "code": "rows_loaded = 0\nif rows_loaded == 0:\n    print(\"Empty batch\")\nprint(\"Check complete\")",
+          "output": "Empty batch\nCheck complete",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Test whether the row count is exactly zero.",
+              "state": "rows_loaded == 0 is True",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "The true branch prints a message.",
+              "state": "inside the if block",
+              "output": "Empty batch"
+            },
+            {
+              "line": 4,
+              "caption": "The unindented statement runs after the branch.",
+              "state": "outside the if block",
+              "output": "Empty batch\nCheck complete"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "If rows is greater than 0, print Ready to load.",
+          "starter": "rows = 12\n# Write an if statement.",
+          "expected": "Ready to load",
+          "solution": "rows = 12\nif rows > 0:\n    print(\"Ready to load\")"
+        },
+        "diagram": [
+          "Test row count",
+          "Zero → Print Empty batch",
+          "Continue after the branch"
+        ]
+      },
+      {
+        "id": "if-elif-else",
+        "title": "Else and elif",
+        "explanation": [
+          "`if`, `elif`, and `else` form one chain. Python checks conditions from top to bottom and runs the first matching block. The final `else`, when present, handles every remaining case.",
+          "Order matters when conditions overlap. Check a missing value before comparing it with a number so the comparison only receives values it can handle.",
+          "Use `is None` to distinguish missing from zero. A generic truth test such as `if not amount` treats both values as false."
+        ],
+        "summary": "Use an ordered chain and make missing-value rules explicit.",
+        "example": {
+          "code": "amount = 0\nif amount is None:\n    print(\"missing\")\nelif amount < 0:\n    print(\"invalid\")\nelse:\n    print(\"valid\")",
+          "output": "valid",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Zero is an integer, so the missing check is false.",
+              "state": "amount is None → False",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Zero is not negative, so the second condition is false.",
+              "state": "amount < 0 → False",
+              "output": ""
+            },
+            {
+              "line": 7,
+              "caption": "The remaining case is valid. This explicitly accepts zero.",
+              "state": "else branch",
+              "output": "valid"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Classify amount as missing if it is None, invalid if negative, or valid otherwise. Print the classification.",
+          "starter": "amount = -9\n# Print exactly one classification.",
+          "expected": "invalid",
+          "solution": "amount = -9\nif amount is None:\n    print(\"missing\")\nelif amount < 0:\n    print(\"invalid\")\nelse:\n    print(\"valid\")"
+        },
+        "diagram": [
+          "amount is None? → missing",
+          "amount < 0? → invalid",
+          "Otherwise → valid"
+        ]
+      },
+      {
+        "id": "nested-conditions",
+        "title": "Nested conditions",
+        "explanation": [
+          "Nest a second check when it makes sense only after the first passes. For example, read a required status only after confirming the record contains it.",
+          "Use `and` when both checks must pass. Python evaluates its left side first and skips the right side when the left side is false. This can guard a key lookup.",
+          "When the branches produce different failure messages, use separate checks so the output tells you which rule failed."
+        ],
+        "summary": "Run dependent checks in order, using nesting or a short-circuiting and expression.",
+        "example": {
+          "code": "job = {\"status\": \"ready\", \"rows\": 3}\nif \"status\" in job and job[\"status\"] == \"ready\":\n    if job.get(\"rows\", 0) > 0:\n        print(\"load\")",
+          "output": "load",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Check for status before reading its value.",
+              "state": "status exists and is ready",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Only a ready job reaches this row-count test.",
+              "state": "rows = 3, rows > 0",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Both checks passed, so the job can load.",
+              "state": "action = load",
+              "output": "load"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Print load only when status is ready and rows is greater than 0. Print hold otherwise.",
+          "starter": "job = {\"status\": \"queued\", \"rows\": 4}\n# Decide whether to load or hold.",
+          "expected": "hold",
+          "solution": "job = {\"status\": \"queued\", \"rows\": 4}\nif job.get(\"status\") == \"ready\" and job.get(\"rows\", 0) > 0:\n    print(\"load\")\nelse:\n    print(\"hold\")"
+        }
+      }
+    ],
+    "legacy_title": "Control Flow"
+  },
+  {
+    "id": "loops",
+    "title": "For and While Loops",
+    "summary": "Walk through rows, count records, and stop on clear conditions.",
+    "lessons": [
+      {
+        "id": "for-loops",
+        "title": "For loops",
+        "explanation": [
+          "A `for` loop takes one item at a time from an iterable such as a list. Python assigns each item to the loop variable and runs the indented block.",
+          "An accumulator is a value you carry across iterations. Set a numeric total to zero before the loop, then add each row's contribution inside it.",
+          "Use `enumerate(rows, start=1)` when you also need a human-readable row number. For example, include the number with a message about an invalid field."
+        ],
+        "summary": "Initialize an accumulator before a for loop and update it inside the loop.",
+        "example": {
+          "code": "counts = [4, 7, 2]\ntotal = 0\nfor count in counts:\n    total += count\nprint(total)",
+          "output": "13",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Set the total before processing any rows.",
+              "state": "total = 0",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Add the first count to the total.",
+              "state": "count = 4, total = 4",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Add the next count to the running total.",
+              "state": "count = 7, total = 11",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Add the final count.",
+              "state": "count = 2, total = 13",
+              "output": ""
+            },
+            {
+              "line": 5,
+              "caption": "The unindented print runs once, after all iterations.",
+              "state": "total = 13",
+              "output": "13"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Use a for loop to add the numbers in counts and print the final total.",
+          "starter": "counts = [3, 6, 1]\ntotal = 0\n# Add each count, then print the total.",
+          "expected": "10",
+          "solution": "counts = [3, 6, 1]\ntotal = 0\nfor count in counts:\n    total += count\nprint(total)"
+        },
+        "diagram": [
+          "total = 0",
+          "Add 4 → 4",
+          "Add 7 → 11",
+          "Add 2 → 13"
+        ]
+      },
+      {
+        "id": "while-loops",
+        "title": "While loops",
+        "explanation": [
+          "A `while` loop repeats while its condition is true. Check the condition before each iteration, so a false condition at the start means zero iterations.",
+          "Update something that moves the loop toward stopping. A page counter should advance after each page. A real paginated API often supplies a next-page token or a signal that no more results exist.",
+          "Prefer `for` when you already have all the items. Use `while` when the stopping condition depends on state that changes during execution."
+        ],
+        "summary": "Make the stopping condition visible and update the state that it depends on.",
+        "example": {
+          "code": "page = 1\nwhile page <= 3:\n    print(\"Page\", page)\n    page += 1",
+          "output": "Page 1\nPage 2\nPage 3",
+          "steps": [
+            {
+              "line": 3,
+              "caption": "The first page passes the limit check.",
+              "state": "page = 1",
+              "output": "Page 1"
+            },
+            {
+              "line": 3,
+              "caption": "The counter advances and the next iteration prints page two.",
+              "state": "page = 2",
+              "output": "Page 1\nPage 2"
+            },
+            {
+              "line": 3,
+              "caption": "The final allowed page also passes.",
+              "state": "page = 3",
+              "output": "Page 1\nPage 2\nPage 3"
+            },
+            {
+              "line": 2,
+              "caption": "After the increment, page four fails the condition and the loop stops.",
+              "state": "page = 4",
+              "output": "Page 1\nPage 2\nPage 3"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Use a while loop to print Page 1 and Page 2 on separate lines, then stop.",
+          "starter": "page = 1\n# Write the loop and remember to advance page.",
+          "expected": "Page 1\nPage 2",
+          "solution": "page = 1\nwhile page <= 2:\n    print(\"Page\", page)\n    page += 1"
+        }
+      },
+      {
+        "id": "break-and-continue",
+        "title": "Break and continue",
+        "explanation": [
+          "`continue` skips the rest of the current iteration and advances to the next one. Use it for rows you can ignore without stopping the batch.",
+          "`break` exits the innermost loop. Use it for a deliberate stopping point, such as the end marker in this simplified input stream.",
+          "In a `while` loop, make sure every path through `continue` still updates any state needed to reach the stopping condition."
+        ],
+        "summary": "Use continue to ignore one item and break to end the loop.",
+        "example": {
+          "code": "events = [\"skip\", \"A12\", \"STOP\", \"A13\"]\nfor event in events:\n    if event == \"skip\":\n        continue\n    if event == \"STOP\":\n        break\n    print(event)",
+          "output": "A12",
+          "steps": [
+            {
+              "line": 4,
+              "caption": "Skip the first item without printing it.",
+              "state": "event = skip",
+              "output": ""
+            },
+            {
+              "line": 7,
+              "caption": "Print the next event because neither condition matched.",
+              "state": "event = A12",
+              "output": "A12"
+            },
+            {
+              "line": 6,
+              "caption": "Exit when STOP arrives. A13 is never read.",
+              "state": "event = STOP",
+              "output": "A12"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Iterate through events, ignore skip, stop at END, and print each other event before END.",
+          "starter": "events = [\"X\", \"skip\", \"Y\", \"END\", \"Z\"]\n# Apply the skip and stop rules.",
+          "expected": "X\nY",
+          "solution": "events = [\"X\", \"skip\", \"Y\", \"END\", \"Z\"]\nfor event in events:\n    if event == \"skip\":\n        continue\n    if event == \"END\":\n        break\n    print(event)"
+        }
+      },
+      {
+        "id": "group-rows",
+        "title": "Grouping rows with a dictionary",
+        "explanation": [
+          "A common pipeline step groups records by one field and adds up another. Use a dictionary so each group name maps to its running total.",
+          "For a new group, `.get(group, 0)` supplies the starting value. After you add the incoming amount, assign the result back to the group.",
+          "Process rows in source order and sort the group names before displaying them when you want predictable output."
+        ],
+        "summary": "Use a dictionary of accumulators to keep one total per group.",
+        "example": {
+          "code": "rows = [(\"west\", 8), (\"east\", 3), (\"west\", 2)]\ntotals = {}\nfor region, count in rows:\n    totals[region] = totals.get(region, 0) + count\nfor region in sorted(totals):\n    print(region, totals[region])",
+          "output": "east 3\nwest 10",
+          "steps": [
+            {
+              "line": 4,
+              "caption": "Start the west group with zero and add eight.",
+              "state": "totals = {'west': 8}",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Start the east group and add three.",
+              "state": "totals = {'west': 8, 'east': 3}",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Read west's existing total and add two more.",
+              "state": "totals = {'west': 10, 'east': 3}",
+              "output": ""
+            },
+            {
+              "line": 6,
+              "caption": "Print the east total first, as determined by sorted keys.",
+              "state": "region = east",
+              "output": "east 3"
+            },
+            {
+              "line": 6,
+              "caption": "Print the west total.",
+              "state": "region = west",
+              "output": "east 3\nwest 10"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Group the amounts in rows by category. Print each category and total in alphabetical order.",
+          "starter": "rows = [(\"books\", 4), (\"food\", 7), (\"books\", 3)]\ntotals = {}\n# Compute and print grouped totals.",
+          "expected": "books 7\nfood 7",
+          "solution": "rows = [(\"books\", 4), (\"food\", 7), (\"books\", 3)]\ntotals = {}\nfor category, amount in rows:\n    totals[category] = totals.get(category, 0) + amount\nfor category in sorted(totals):\n    print(category, totals[category])"
+        }
+      }
+    ],
+    "legacy_title": "Loops and Iteration"
+  },
+  {
+    "id": "exceptions",
+    "title": "Try, Except, Else, and Finally",
+    "summary": "Recover from bad input, record rejected rows, and let unexpected errors surface.",
+    "lessons": [
+      {
+        "id": "try-except",
+        "title": "Handling a specific exception",
+        "explanation": [
+          "Python raises an exception when an operation cannot finish. For example, converting `\"bad\"` to an integer raises `ValueError`.",
+          "Place the operation you expect might fail in a small `try` block. Catch the specific error with `except ValueError` so an unrelated error can still surface.",
+          "Choose a response that preserves meaning. For a broken count, logging a rejected field is often better than silently converting it to zero."
+        ],
+        "summary": "Catch the expected exception next to the operation that can raise it.",
+        "example": {
+          "code": "raw = \"bad\"\ntry:\n    count = int(raw)\n    print(count)\nexcept ValueError:\n    print(\"Reject:\", raw)",
+          "output": "Reject: bad",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Read a nonnumeric value from the source.",
+              "state": "raw = \"bad\"",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "int cannot parse this text and raises ValueError.",
+              "state": "count was never assigned",
+              "output": ""
+            },
+            {
+              "line": 6,
+              "caption": "The matching except block reports the rejected field.",
+              "state": "handler = ValueError",
+              "output": "Reject: bad"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Try converting raw to int and print the number. On ValueError, print Invalid units.",
+          "starter": "raw = \"n/a\"\n# Catch ValueError and print the message.",
+          "expected": "Invalid units",
+          "solution": "raw = \"n/a\"\ntry:\n    units = int(raw)\n    print(units)\nexcept ValueError:\n    print(\"Invalid units\")"
+        },
+        "diagram": [
+          "Convert input",
+          "Success → keep value",
+          "ValueError → record rejection"
+        ]
+      },
+      {
+        "id": "valid-and-rejected-rows",
+        "title": "Keep valid rows and record rejects",
+        "explanation": [
+          "Put try/except inside a loop when one malformed field should not stop the entire batch. Use `enumerate(..., start=1)` to identify the source row in your rejection record.",
+          "The `else` block of try/except runs when the try block finishes without an exception. Append the converted value there so errors in later operations stay visible.",
+          "Track valid and rejected rows separately. A real pipeline can report the rejected count and keep enough diagnostic context to fix the source."
+        ],
+        "summary": "Put validation inside the loop so rejected rows can be tracked without ending the batch.",
+        "example": {
+          "code": "fields = [\"7\", \"bad\", \"4\"]\ngood, rejected = [], []\nfor row_number, raw in enumerate(fields, start=1):\n    try:\n        value = int(raw)\n    except ValueError:\n        rejected.append(row_number)\n    else:\n        good.append(value)\nprint(good)\nprint(rejected)",
+          "output": "[7, 4]\n[2]",
+          "steps": [
+            {
+              "line": 9,
+              "caption": "Conversion succeeds for row one, so append seven.",
+              "state": "good = [7]",
+              "output": ""
+            },
+            {
+              "line": 7,
+              "caption": "Row two raises ValueError, so record its row number.",
+              "state": "rejected = [2]",
+              "output": ""
+            },
+            {
+              "line": 9,
+              "caption": "Row three succeeds and processing continues.",
+              "state": "good = [7, 4]",
+              "output": ""
+            },
+            {
+              "line": 10,
+              "caption": "Print the valid values.",
+              "state": "good = [7, 4]",
+              "output": "[7, 4]"
+            },
+            {
+              "line": 11,
+              "caption": "Print the rejected row numbers.",
+              "state": "rejected = [2]",
+              "output": "[7, 4]\n[2]"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Convert the valid fields to integers. Print the list of integers and then the rejected row numbers, each on its own line.",
+          "starter": "fields = [\"bad\", \"3\", \"10\", \"n/a\"]\ngood, rejected = [], []\n# Parse each row and report both lists.",
+          "expected": "[3, 10]\n[1, 4]",
+          "solution": "fields = [\"bad\", \"3\", \"10\", \"n/a\"]\ngood, rejected = [], []\nfor row_number, raw in enumerate(fields, start=1):\n    try:\n        value = int(raw)\n    except ValueError:\n        rejected.append(row_number)\n    else:\n        good.append(value)\nprint(good)\nprint(rejected)"
+        }
+      },
+      {
+        "id": "cleanup",
+        "title": "Finally and cleanup",
+        "explanation": [
+          "A `finally` block runs during normal exit from a try statement, including when an exception is handled or is about to propagate. Use it for necessary cleanup after work starts.",
+          "When an object supports a context manager, prefer `with` for predictable cleanup. For example, `with open(path) as source:` closes the file when execution leaves the block.",
+          "Avoid returning from a finally block. A return there can hide another return value or an exception."
+        ],
+        "summary": "Use finally when cleanup must also happen on an error path.",
+        "example": {
+          "code": "try:\n    print(int(\"bad\"))\nexcept ValueError:\n    print(\"Rejected\")\nfinally:\n    print(\"Validation finished\")",
+          "output": "Rejected\nValidation finished",
+          "steps": [
+            {
+              "line": 2,
+              "caption": "Converting bad text raises ValueError before print runs.",
+              "state": "conversion failed",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "The matching handler reports the failed value.",
+              "state": "error handled",
+              "output": "Rejected"
+            },
+            {
+              "line": 6,
+              "caption": "The finally block runs after the handler.",
+              "state": "cleanup runs",
+              "output": "Rejected\nValidation finished"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Print Ready in try and Finished in finally, on separate lines.",
+          "starter": "# Add the try and finally blocks.",
+          "expected": "Ready\nFinished",
+          "solution": "try:\n    print(\"Ready\")\nfinally:\n    print(\"Finished\")"
+        }
+      }
+    ]
+  },
+  {
+    "id": "functions",
+    "title": "Functions",
+    "summary": "Write reusable transformations with explicit inputs and results.",
+    "lessons": [
+      {
+        "id": "defining-functions",
+        "title": "Defining functions",
+        "explanation": [
+          "A function packages a task under a name. Define one with `def`, put its body in an indented block, and call it with parentheses.",
+          "A parameter names a value supplied to the function. Keep functions focused so they can be understood and exercised independently.",
+          "Defining a function creates it without running its body. The body runs only when you call it."
+        ],
+        "summary": "A function definition packages work and a call passes in a concrete value.",
+        "example": {
+          "code": "def report_count(rows):\n    print(\"Rows:\", rows)\n\nreport_count(5)",
+          "output": "Rows: 5",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Define report_count with one parameter.",
+              "state": "function defined",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Call report_count and bind rows to five.",
+              "state": "rows = 5",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Run the function body and print the count.",
+              "state": "report_count(5)",
+              "output": "Rows: 5"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Define report_count(rows) so that calling it with 12 prints Rows: 12.",
+          "starter": "# Define report_count here.\n\nreport_count(12)",
+          "expected": "Rows: 12",
+          "solution": "def report_count(rows):\n    print(\"Rows:\", rows)\n\nreport_count(12)"
+        }
+      },
+      {
+        "id": "arguments",
+        "title": "Arguments",
+        "explanation": [
+          "The function definition names its parameters. The call supplies arguments by position or by parameter name.",
+          "A default value is used when the caller omits that argument. Keyword arguments can make a call easier to read when its purpose depends on a threshold or option.",
+          "Use immutable defaults, such as a number, a string, or `None`. A list used as a default can retain changes across calls."
+        ],
+        "summary": "Use parameters to name the input and keyword arguments to explain options at call sites.",
+        "example": {
+          "code": "def passes_minimum(rows, minimum=10):\n    return rows >= minimum\n\nprint(passes_minimum(8))\nprint(passes_minimum(8, minimum=5))",
+          "output": "False\nTrue",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Define a default threshold of ten rows.",
+              "state": "minimum defaults to 10",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Use the default threshold because the call omits it.",
+              "state": "8 >= 10 is False",
+              "output": "False"
+            },
+            {
+              "line": 5,
+              "caption": "Override the default with a keyword argument.",
+              "state": "8 >= 5 is True",
+              "output": "False\nTrue"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Define batch_count(rows, size=10) to return the number of full batches. The existing calls should print 2 and 4.",
+          "starter": "# Define batch_count here.\n\nprint(batch_count(23))\nprint(batch_count(23, size=5))",
+          "expected": "2\n4",
+          "solution": "def batch_count(rows, size=10):\n    return rows // size\n\nprint(batch_count(23))\nprint(batch_count(23, size=5))"
+        }
+      },
+      {
+        "id": "return-values",
+        "title": "Return values",
+        "explanation": [
+          "`return` ends a function call and hands its result to the caller. The caller can store that result, pass it to another function, or print it.",
+          "A function that reaches its end without an explicit return produces `None`. A printed message does not become a return value.",
+          "For transformations, return clean values so you can compose processing steps and use `assert` to check small examples."
+        ],
+        "summary": "Return transformation results so callers can reuse and test them.",
+        "example": {
+          "code": "def normalize_status(raw):\n    return raw.strip().lower()\n\nresult = normalize_status(\" READY \")\nassert result == \"ready\"\nprint(result)",
+          "output": "ready",
+          "steps": [
+            {
+              "line": 4,
+              "caption": "Call the function with an input that contains spaces and uppercase letters.",
+              "state": "raw = \" READY \"",
+              "output": ""
+            },
+            {
+              "line": 2,
+              "caption": "Return the cleaned value to the caller.",
+              "state": "result = \"ready\"",
+              "output": ""
+            },
+            {
+              "line": 5,
+              "caption": "Check the expected value before displaying it.",
+              "state": "result == \"ready\" is True",
+              "output": ""
+            },
+            {
+              "line": 6,
+              "caption": "Print the value received by the caller.",
+              "state": "result = \"ready\"",
+              "output": "ready"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Define clean_region(raw) to return trimmed, lowercase text. Keep the assert and print calls.",
+          "starter": "# Define clean_region here.\n\nassert clean_region(\" EAST \") == \"east\"\nprint(clean_region(\" WEST \"))",
+          "expected": "west",
+          "solution": "def clean_region(raw):\n    return raw.strip().lower()\n\nassert clean_region(\" EAST \") == \"east\"\nprint(clean_region(\" WEST \"))"
+        },
+        "diagram": [
+          "Raw status",
+          "normalize_status(raw)",
+          "Return cleaned status",
+          "Assert expected value"
+        ]
+      }
+    ],
+    "legacy_title": "Functions"
+  },
+  {
+    "id": "files-and-formats",
+    "title": "Imports, CSV, and JSON",
+    "summary": "Use Python's standard library to read and write common interchange formats.",
+    "lessons": [
+      {
+        "id": "imports-paths",
+        "title": "Importing only what you need",
+        "explanation": [
+          "An import makes another module or one of its names available. `import csv` lets you call `csv.DictReader`. `from pathlib import Path` brings the single name `Path` into your script.",
+          "Modules such as `csv`, `json`, `pathlib`, and `sqlite3` come with standard Python. Use `python -m pip install PACKAGE` only when your project needs a third-party package, then record the dependency for future runs.",
+          "Use `Path` to build file paths without manually assembling platform-specific separators. In the browser, file examples run in a virtual working directory."
+        ],
+        "summary": "Use the standard library for common file and data tasks and import the names you need.",
+        "example": {
+          "code": "from pathlib import Path\n\nsource = Path(\"incoming\") / \"orders.csv\"\nprint(source.name)\nprint(source.suffix)",
+          "output": "orders.csv\n.csv",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Import Path from the standard library.",
+              "state": "Path is available",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Join the folder and filename with the path operator.",
+              "state": "incoming / orders.csv",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Read only the filename portion.",
+              "state": "name = orders.csv",
+              "output": "orders.csv"
+            },
+            {
+              "line": 5,
+              "caption": "Read the extension, including its leading dot.",
+              "state": "suffix = .csv",
+              "output": "orders.csv\n.csv"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Build a Path for data/events.json, then print its filename and suffix on separate lines.",
+          "starter": "from pathlib import Path\n\n# Build the path and print its two fields.",
+          "expected": "events.json\n.json",
+          "solution": "from pathlib import Path\n\nsource = Path(\"data\") / \"events.json\"\nprint(source.name)\nprint(source.suffix)"
+        }
+      },
+      {
+        "id": "read-csv",
+        "title": "Reading CSV rows",
+        "explanation": [
+          "`csv.DictReader` uses the header row as keys and yields one dictionary per data row. Treat these field values as text until you convert the fields you need.",
+          "Use a CSV parser rather than splitting on commas, since quoted fields can contain commas or newlines. For a file on disk, use `with open(path, newline=\"\", encoding=\"utf-8\") as source:` and pass source to the reader.",
+          "The example uses `StringIO` to provide the same input interface from a string, so you can run it without uploading files."
+        ],
+        "summary": "Read CSV with its dedicated parser and convert numeric fields before arithmetic.",
+        "example": {
+          "code": "import csv\nfrom io import StringIO\n\ndata = \"id,units\\nA12,7\\nA13,3\\n\"\nfor row in csv.DictReader(StringIO(data)):\n    print(row[\"id\"], int(row[\"units\"]))",
+          "output": "A12 7\nA13 3",
+          "steps": [
+            {
+              "line": 4,
+              "caption": "The data begins with a header line and contains two records.",
+              "state": "CSV columns: id, units",
+              "output": ""
+            },
+            {
+              "line": 6,
+              "caption": "Read the first record. Convert its units field from text to int.",
+              "state": "row = {'id': 'A12', 'units': '7'}",
+              "output": "A12 7"
+            },
+            {
+              "line": 6,
+              "caption": "Repeat for the second row.",
+              "state": "row = {'id': 'A13', 'units': '3'}",
+              "output": "A12 7\nA13 3"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Read the CSV, convert units to integers, and print their sum.",
+          "starter": "import csv\nfrom io import StringIO\n\ndata = \"id,units\\nA14,2\\nA15,9\\n\"\n# Read the rows and print the total.",
+          "expected": "11",
+          "solution": "import csv\nfrom io import StringIO\n\ndata = \"id,units\\nA14,2\\nA15,9\\n\"\ntotal = 0\nfor row in csv.DictReader(StringIO(data)):\n    total += int(row[\"units\"])\nprint(total)"
+        },
+        "diagram": [
+          "Read header",
+          "Yield row dictionary",
+          "Convert units",
+          "Process the row"
+        ]
+      },
+      {
+        "id": "write-json",
+        "title": "Reading and writing JSON",
+        "explanation": [
+          "Use `json.loads(text)` to parse JSON text and `json.dumps(value)` to produce JSON text. For a file object, use `json.load(source)` or `json.dump(value, destination)` inside a with block.",
+          "JSON objects become Python dictionaries, arrays become lists, and null becomes None. A Python value still needs serializing before you send it as JSON.",
+          "Use `sort_keys=True` when you want stable object key order for examples or comparisons. The example transforms a field between reading and writing."
+        ],
+        "summary": "Parse before editing, then serialize to exchange data with other systems.",
+        "example": {
+          "code": "import json\n\ntext = '{\"id\": \"A12\", \"units\": \"7\"}'\nrow = json.loads(text)\nrow[\"units\"] = int(row[\"units\"])\nprint(json.dumps(row, sort_keys=True))",
+          "output": "{\"id\": \"A12\", \"units\": 7}",
+          "steps": [
+            {
+              "line": 4,
+              "caption": "Decode JSON text into a Python dictionary.",
+              "state": "units = \"7\" (str)",
+              "output": ""
+            },
+            {
+              "line": 5,
+              "caption": "Replace the text field with an integer.",
+              "state": "units = 7 (int)",
+              "output": ""
+            },
+            {
+              "line": 6,
+              "caption": "Encode the dictionary back into JSON text and print it.",
+              "state": "serialized JSON",
+              "output": "{\"id\": \"A12\", \"units\": 7}"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Parse the JSON, set status to ready, and print the JSON with sorted keys.",
+          "starter": "import json\n\ntext = '{\"id\":\"A14\",\"status\":\"raw\"}'\n# Parse, update, and print the new JSON.",
+          "expected": "{\"id\": \"A14\", \"status\": \"ready\"}",
+          "solution": "import json\n\ntext = '{\"id\":\"A14\",\"status\":\"raw\"}'\nrow = json.loads(text)\nrow[\"status\"] = \"ready\"\nprint(json.dumps(row, sort_keys=True))"
+        }
+      }
+    ]
+  },
+  {
+    "id": "sqlite-crud",
+    "title": "SQLite and CRUD",
+    "summary": "Create sample rows, read them back, update fields, and delete targeted rows.",
+    "lessons": [
+      {
+        "id": "sqlite-insert",
+        "title": "Create a table and insert a row",
+        "explanation": [
+          "SQLite stores data without a separate database server. `sqlite3.connect(\":memory:\")` gives this lesson an isolated database that disappears when its connection closes.",
+          "Use `CREATE TABLE` to define columns and their constraints. In CRUD, creating a record is the `INSERT INTO` operation. The example sets each order's ID as a primary key.",
+          "Use a `?` placeholder for each input value and pass the values as a tuple. Keep data separate from SQL code. Use `commit()` when you want to end the transaction and persist its changes."
+        ],
+        "summary": "Define the table, insert parameterized data, and verify the result.",
+        "example": {
+          "code": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.execute(\"INSERT INTO orders (id, units) VALUES (?, ?)\", (\"A12\", 7))\ndb.commit()\nprint(db.execute(\"SELECT COUNT(*) FROM orders\").fetchone()[0])\ndb.close()",
+          "output": "1",
+          "steps": [
+            {
+              "line": 4,
+              "caption": "Create the table with two columns and an ID constraint.",
+              "state": "orders: id, units",
+              "output": ""
+            },
+            {
+              "line": 5,
+              "caption": "Bind the ID and count to the placeholders and insert a row.",
+              "state": "row = (A12, 7)",
+              "output": ""
+            },
+            {
+              "line": 6,
+              "caption": "Commit the write transaction.",
+              "state": "one row committed",
+              "output": ""
+            },
+            {
+              "line": 7,
+              "caption": "Verify the inserted record by counting rows.",
+              "state": "count = 1",
+              "output": "1"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Insert two rows into the table using separate parameterized INSERT commands, then print the row count.",
+          "starter": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\n# Insert A12 and A13 with unit counts of your choice.\nprint(db.execute(\"SELECT COUNT(*) FROM orders\").fetchone()[0])\ndb.close()",
+          "expected": "2",
+          "solution": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.execute(\"INSERT INTO orders VALUES (?, ?)\", (\"A12\", 7))\ndb.execute(\"INSERT INTO orders VALUES (?, ?)\", (\"A13\", 5))\nprint(db.execute(\"SELECT COUNT(*) FROM orders\").fetchone()[0])\ndb.close()"
+        },
+        "diagram": [
+          "Connect",
+          "CREATE TABLE",
+          "INSERT row",
+          "Check count"
+        ]
+      },
+      {
+        "id": "sqlite-select",
+        "title": "Read rows with SELECT",
+        "explanation": [
+          "Use `SELECT` to name the columns you want and `WHERE` to narrow the result. Bind the filter value using a placeholder, just as you do for an insert.",
+          "Fetch one row with `.fetchone()`, or all matching rows with `.fetchall()`. Fetchone returns None if no row matches. Use `ORDER BY` when output order matters.",
+          "A single value passed as a tuple needs a trailing comma, as in `(5,)`."
+        ],
+        "summary": "Select known columns and bind filter values separately.",
+        "example": {
+          "code": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.executemany(\"INSERT INTO orders VALUES (?, ?)\", [(\"A12\", 7), (\"A13\", 3)])\nrows = db.execute(\"SELECT id, units FROM orders WHERE units >= ? ORDER BY id\", (5,))\nprint(rows.fetchall())\ndb.close()",
+          "output": "[('A12', 7)]",
+          "steps": [
+            {
+              "line": 5,
+              "caption": "Insert two records to query.",
+              "state": "A12: 7, A13: 3",
+              "output": ""
+            },
+            {
+              "line": 6,
+              "caption": "Select IDs and units for rows with at least five units.",
+              "state": "only A12 matches",
+              "output": ""
+            },
+            {
+              "line": 7,
+              "caption": "Fetch and print the matching row tuples.",
+              "state": "one matched tuple",
+              "output": "[('A12', 7)]"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Read the ID and units for rows with less than 5 units. Print fetchall() from your SELECT.",
+          "starter": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.executemany(\"INSERT INTO orders VALUES (?, ?)\", [(\"A12\", 7), (\"A13\", 3)])\n# Select the matching rows and print them.\ndb.close()",
+          "expected": "[('A13', 3)]",
+          "solution": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.executemany(\"INSERT INTO orders VALUES (?, ?)\", [(\"A12\", 7), (\"A13\", 3)])\nrows = db.execute(\"SELECT id, units FROM orders WHERE units < ? ORDER BY id\", (5,))\nprint(rows.fetchall())\ndb.close()"
+        }
+      },
+      {
+        "id": "sqlite-update",
+        "title": "Update a targeted row",
+        "explanation": [
+          "`UPDATE` changes fields in existing rows. Use `SET` for the new value and `WHERE` to identify which rows should change.",
+          "Use a primary key to target a single record. An update without a WHERE clause affects every row in the table.",
+          "Inspect the affected row count and read the data back when you need to verify the result."
+        ],
+        "summary": "Pair SET with a precise WHERE condition and verify the affected rows.",
+        "example": {
+          "code": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.execute(\"INSERT INTO orders VALUES (?, ?)\", (\"A12\", 7))\nupdated = db.execute(\"UPDATE orders SET units = ? WHERE id = ?\", (8, \"A12\"))\nprint(updated.rowcount)\nprint(db.execute(\"SELECT units FROM orders WHERE id = ?\", (\"A12\",)).fetchone()[0])\ndb.close()",
+          "output": "1\n8",
+          "steps": [
+            {
+              "line": 6,
+              "caption": "Bind the new units and select the order with ID A12.",
+              "state": "A12 units: 7 → 8",
+              "output": ""
+            },
+            {
+              "line": 7,
+              "caption": "Confirm that one row was affected.",
+              "state": "rowcount = 1",
+              "output": "1"
+            },
+            {
+              "line": 8,
+              "caption": "Read the updated units back.",
+              "state": "A12 units = 8",
+              "output": "1\n8"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Update only A13 to 10 units. Print all records ordered by ID to verify A12 stayed at 7.",
+          "starter": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.executemany(\"INSERT INTO orders VALUES (?, ?)\", [(\"A12\", 7), (\"A13\", 3)])\n# Update A13 and print the ordered records.\ndb.close()",
+          "expected": "[('A12', 7), ('A13', 10)]",
+          "solution": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.executemany(\"INSERT INTO orders VALUES (?, ?)\", [(\"A12\", 7), (\"A13\", 3)])\ndb.execute(\"UPDATE orders SET units = ? WHERE id = ?\", (10, \"A13\"))\nprint(db.execute(\"SELECT id, units FROM orders ORDER BY id\").fetchall())\ndb.close()"
+        }
+      },
+      {
+        "id": "sqlite-delete",
+        "title": "Delete a targeted row",
+        "explanation": [
+          "`DELETE FROM` removes rows matching its WHERE clause. A DELETE without a WHERE clause removes all rows from the table.",
+          "Preview which rows match with a SELECT using the same condition. Then delete the intended rows and verify what remains.",
+          "In a transactional database, group related writes so you can commit them together or roll back the transaction if validation fails. The practice database is in memory."
+        ],
+        "summary": "Preview the filter, delete targeted rows, and check what remains.",
+        "example": {
+          "code": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.executemany(\"INSERT INTO orders VALUES (?, ?)\", [(\"A12\", 7), (\"A13\", 0)])\nprint(db.execute(\"SELECT id FROM orders WHERE units = ?\", (0,)).fetchall())\ndb.execute(\"DELETE FROM orders WHERE units = ?\", (0,))\nprint(db.execute(\"SELECT id FROM orders ORDER BY id\").fetchall())\ndb.close()",
+          "output": "[('A13',)]\n[('A12',)]",
+          "steps": [
+            {
+              "line": 6,
+              "caption": "Preview the zero-unit record to be removed.",
+              "state": "only A13 matches",
+              "output": "[('A13',)]"
+            },
+            {
+              "line": 7,
+              "caption": "Delete rows that match the same condition.",
+              "state": "A13 removed; A12 remains",
+              "output": "[('A13',)]"
+            },
+            {
+              "line": 8,
+              "caption": "Verify the remaining ID.",
+              "state": "remaining ID = A12",
+              "output": "[('A13',)]\n[('A12',)]"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Delete only A12 by ID. Print the remaining IDs as a list of tuples.",
+          "starter": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.executemany(\"INSERT INTO orders VALUES (?, ?)\", [(\"A12\", 7), (\"A13\", 3)])\n# Delete one row and print the remaining IDs.\ndb.close()",
+          "expected": "[('A13',)]",
+          "solution": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE orders (id TEXT PRIMARY KEY, units INTEGER)\")\ndb.executemany(\"INSERT INTO orders VALUES (?, ?)\", [(\"A12\", 7), (\"A13\", 3)])\ndb.execute(\"DELETE FROM orders WHERE id = ?\", (\"A12\",))\nprint(db.execute(\"SELECT id FROM orders ORDER BY id\").fetchall())\ndb.close()"
+        }
+      }
+    ]
+  },
+  {
+    "id": "optional-record-classes",
+    "title": "Optional Classes and Records",
+    "summary": "Model stable record shapes and behaviors when functions and dictionaries become cumbersome.",
+    "lessons": [
+      {
+        "id": "classes",
+        "title": "Classes",
+        "explanation": [
+          "A class defines the attributes and behaviors available on its instances. A small record type can make a stable schema explicit when several parts of a program pass the same fields around.",
+          "The standard library's `@dataclass` decorator builds an initializer from fields declared on the class. Type hints describe the expected fields and do not validate incoming values at runtime.",
+          "Use plain dictionaries for raw input with variable columns, and validate fields before creating a typed record."
+        ],
+        "summary": "A class can provide a named record structure for already validated values.",
+        "example": {
+          "code": "from dataclasses import dataclass\n\n@dataclass\nclass Batch:\n    name: str\n    rows: int\n\nbatch = Batch(\"orders\", 7)\nprint(batch.name, batch.rows)",
+          "output": "orders 7",
+          "steps": [
+            {
+              "line": 4,
+              "caption": "Define Batch with a name and a row count.",
+              "state": "fields: name, rows",
+              "output": ""
+            },
+            {
+              "line": 8,
+              "caption": "Create a Batch instance with concrete values.",
+              "state": "name = orders, rows = 7",
+              "output": ""
+            },
+            {
+              "line": 9,
+              "caption": "Read both fields by name.",
+              "state": "batch.name, batch.rows",
+              "output": "orders 7"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Create a Batch for clicks with 4 rows and print its name and row count on one line.",
+          "starter": "from dataclasses import dataclass\n\n@dataclass\nclass Batch:\n    name: str\n    rows: int\n\n# Create and print the two fields.",
+          "expected": "clicks 4",
+          "solution": "from dataclasses import dataclass\n\n@dataclass\nclass Batch:\n    name: str\n    rows: int\n\nbatch = Batch(\"clicks\", 4)\nprint(batch.name, batch.rows)"
+        }
+      },
+      {
+        "id": "objects",
+        "title": "Objects",
+        "explanation": [
+          "An object made from a class is an instance. Two instances of the same class can hold different values for the same fields.",
+          "Change an attribute on a mutable instance using `object.field = value`. A change to one instance does not change another instance's independent scalar attribute.",
+          "Create separate records for separate batches when both need to be kept in memory."
+        ],
+        "summary": "Instances of the same class can hold different field values.",
+        "example": {
+          "code": "from dataclasses import dataclass\n\n@dataclass\nclass Batch:\n    rows: int\n\nfirst = Batch(4)\nsecond = Batch(8)\nfirst.rows += 2\nprint(first.rows, second.rows)",
+          "output": "6 8",
+          "steps": [
+            {
+              "line": 7,
+              "caption": "Create the first instance with four rows.",
+              "state": "first.rows = 4",
+              "output": ""
+            },
+            {
+              "line": 8,
+              "caption": "Create a second instance with eight rows.",
+              "state": "second.rows = 8",
+              "output": ""
+            },
+            {
+              "line": 9,
+              "caption": "Add two rows to first only.",
+              "state": "first.rows = 6, second.rows = 8",
+              "output": ""
+            },
+            {
+              "line": 10,
+              "caption": "Print both independent counters.",
+              "state": "two Batch objects",
+              "output": "6 8"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Create one Batch with 3 rows and a second with 9. Add 1 to the second and print both values.",
+          "starter": "from dataclasses import dataclass\n\n@dataclass\nclass Batch:\n    rows: int\n\n# Create and update the instances.",
+          "expected": "3 10",
+          "solution": "from dataclasses import dataclass\n\n@dataclass\nclass Batch:\n    rows: int\n\nfirst = Batch(3)\nsecond = Batch(9)\nsecond.rows += 1\nprint(first.rows, second.rows)"
+        }
+      },
+      {
+        "id": "methods",
+        "title": "Methods",
+        "explanation": [
+          "A method is a function defined on a class. Its first parameter is conventionally called `self`, and points to the current instance when you call it through an object.",
+          "A method can read instance attributes, update them, or return a derived value. Use a method when the behavior belongs with the object's fields.",
+          "This method checks whether a batch meets a threshold using its own row count."
+        ],
+        "summary": "Use self to read the current record's fields inside a method.",
+        "example": {
+          "code": "from dataclasses import dataclass\n\n@dataclass\nclass Batch:\n    rows: int\n\n    def is_ready(self, minimum):\n        return self.rows >= minimum\n\nbatch = Batch(12)\nprint(batch.is_ready(10))\nprint(batch.is_ready(20))",
+          "output": "True\nFalse",
+          "steps": [
+            {
+              "line": 10,
+              "caption": "Create a batch object holding twelve rows.",
+              "state": "batch.rows = 12",
+              "output": ""
+            },
+            {
+              "line": 11,
+              "caption": "Call the method with a threshold of ten. self refers to batch.",
+              "state": "12 >= 10 is True",
+              "output": "True"
+            },
+            {
+              "line": 12,
+              "caption": "Call the method again with a bigger threshold.",
+              "state": "12 >= 20 is False",
+              "output": "True\nFalse"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Add a method empty() that returns whether rows is zero. Keep the two print calls.",
+          "starter": "from dataclasses import dataclass\n\n@dataclass\nclass Batch:\n    rows: int\n    # Define empty(self) here.\n\nprint(Batch(0).empty())\nprint(Batch(3).empty())",
+          "expected": "True\nFalse",
+          "solution": "from dataclasses import dataclass\n\n@dataclass\nclass Batch:\n    rows: int\n\n    def empty(self):\n        return self.rows == 0\n\nprint(Batch(0).empty())\nprint(Batch(3).empty())"
+        }
+      }
+    ],
+    "legacy_title": "Classes and Objects"
+  },
+  {
+    "id": "pipeline-project",
+    "title": "Project: Load an Expense Dataset",
+    "summary": "Build and test a small pipeline that validates expense rows and reports totals.",
+    "lessons": [
+      {
+        "id": "project-requirements",
+        "title": "Project requirements",
+        "explanation": [
+          "The input is a CSV with an expense ID, a category, and a whole-number amount in cents. Keeping currency in cents lets this project use exact integer arithmetic.",
+          "Accept a row if its ID and category have text and its amount parses as a nonnegative integer. Normalize the category, preserve row numbers for rejections, and report the accepted and rejected counts.",
+          "Choose a duplicate rule before loading. In this project, the first valid occurrence of each expense ID wins, and later duplicates are rejected. Sum accepted cents by normalized category."
+        ],
+        "summary": "Define required inputs, validation rules, duplicate behavior, and expected output before writing the pipeline.",
+        "example": {
+          "code": "required = {\"id\", \"category\", \"cents\"}\ncolumns = {\"id\", \"cents\"}\nmissing = required - columns\nprint(sorted(missing))",
+          "output": "['category']",
+          "steps": [
+            {
+              "line": 1,
+              "caption": "Define the required header names.",
+              "state": "required = {id, category, cents}",
+              "output": ""
+            },
+            {
+              "line": 3,
+              "caption": "Find required names absent from the source header.",
+              "state": "missing = {category}",
+              "output": ""
+            },
+            {
+              "line": 4,
+              "caption": "Print a stable report of the missing columns.",
+              "state": "one missing header",
+              "output": "['category']"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "List the absent required columns for this dataset and print them in alphabetical order.",
+          "starter": "required = {\"id\", \"category\", \"cents\"}\ncolumns = {\"id\", \"timestamp\"}\n# Print the sorted missing column names.",
+          "expected": "['category', 'cents']",
+          "solution": "required = {\"id\", \"category\", \"cents\"}\ncolumns = {\"id\", \"timestamp\"}\nprint(sorted(required - columns))"
+        },
+        "diagram": [
+          "CSV expenses",
+          "Validate and normalize",
+          "Reject invalid or repeated IDs",
+          "Load accepted rows",
+          "Report grouped totals"
+        ]
+      },
+      {
+        "id": "build-the-tracker",
+        "title": "Build the expense pipeline",
+        "explanation": [
+          "First parse the incoming rows. Normalize the category with string methods, then validate the integer amount with a small try block. Assign a rejection reason before continuing to the next row.",
+          "Keep a set of accepted IDs to catch duplicates and a list of clean tuples ready for SQLite. This example demonstrates those steps with compact source data so you can follow each transition.",
+          "Load clean records with `executemany()` and parameterized SQL. Group by category using `SUM(cents)` in your final query, then compare the report with totals you calculated by hand."
+        ],
+        "summary": "Validate raw records before loading clean tuples and querying the aggregate report.",
+        "example": {
+          "code": "rows = [(\"A\", \" Food \", \"150\"), (\"B\", \"books\", \"bad\"), (\"A\", \"food\", \"200\")]\nclean, rejected, seen = [], [], set()\nfor expense_id, category, raw_cents in rows:\n    try:\n        cents = int(raw_cents)\n    except ValueError:\n        rejected.append((expense_id, \"invalid amount\"))\n        continue\n    category = category.strip().lower()\n    if not expense_id.strip() or not category or cents < 0:\n        rejected.append((expense_id, \"invalid record\"))\n    elif expense_id in seen:\n        rejected.append((expense_id, \"duplicate\"))\n    else:\n        seen.add(expense_id)\n        clean.append((expense_id, category, cents))\nprint(clean)\nprint(rejected)",
+          "output": "[('A', 'food', 150)]\n[('B', 'invalid amount'), ('A', 'duplicate')]",
+          "steps": [
+            {
+              "line": 16,
+              "caption": "Normalize Food and accept the first valid record.",
+              "state": "clean = [(A, food, 150)], seen contains A",
+              "output": ""
+            },
+            {
+              "line": 7,
+              "caption": "The amount on B fails conversion. Record the error and continue.",
+              "state": "rejected = [(B, invalid amount)]",
+              "output": ""
+            },
+            {
+              "line": 13,
+              "caption": "A is already in the set, so reject its second occurrence.",
+              "state": "rejected also contains (A, duplicate)",
+              "output": ""
+            },
+            {
+              "line": 17,
+              "caption": "Print the tuples ready for loading.",
+              "state": "one accepted record",
+              "output": "[('A', 'food', 150)]"
+            },
+            {
+              "line": 18,
+              "caption": "Print the rejected records with their reasons.",
+              "state": "two rejected records",
+              "output": "[('A', 'food', 150)]\n[('B', 'invalid amount'), ('A', 'duplicate')]"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Load the clean tuples into SQLite using executemany. Print categories and their total cents ordered by category.",
+          "starter": "import sqlite3\n\nclean = [(\"A\", \"food\", 150), (\"B\", \"food\", 250), (\"C\", \"books\", 100)]\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE expenses (id TEXT PRIMARY KEY, category TEXT, cents INTEGER)\")\n# Insert clean, then SELECT category, SUM(cents) grouped by category and ordered by category.\ndb.close()",
+          "expected": "[('books', 100), ('food', 400)]",
+          "solution": "import sqlite3\n\nclean = [(\"A\", \"food\", 150), (\"B\", \"food\", 250), (\"C\", \"books\", 100)]\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE expenses (id TEXT PRIMARY KEY, category TEXT, cents INTEGER)\")\ndb.executemany(\"INSERT INTO expenses VALUES (?, ?, ?)\", clean)\nreport = db.execute(\"SELECT category, SUM(cents) FROM expenses GROUP BY category ORDER BY category\")\nprint(report.fetchall())\ndb.close()"
+        },
+        "legacy_title": "Build the tracker"
+      },
+      {
+        "id": "test-the-pipeline",
+        "title": "Test your solution",
+        "explanation": [
+          "Start with a few tiny inputs whose expected results you can calculate independently. Test valid zero cents, a nonnumeric field, a negative amount, and a repeated ID.",
+          "Use `assert` for simple checks while developing or testing. Keep runtime validation in ordinary conditionals and exceptions because asserts can be disabled.",
+          "Check that the number of accepted plus rejected rows equals the input count. Verify the final totals and test that rerunning data with the same IDs follows the duplicate policy you chose."
+        ],
+        "summary": "Test representative cases and the edge cases that matter for your pipeline.",
+        "example": {
+          "code": "def clean_cents(raw):\n    cents = int(raw)\n    if cents < 0:\n        raise ValueError(\"negative cents\")\n    return cents\n\nassert clean_cents(\"0\") == 0\ntry:\n    clean_cents(\"-1\")\nexcept ValueError:\n    print(\"Negative rejected\")\nelse:\n    raise AssertionError(\"Negative cents should be rejected\")",
+          "output": "Negative rejected",
+          "steps": [
+            {
+              "line": 7,
+              "caption": "Confirm that zero is a valid amount.",
+              "state": "zero accepted",
+              "output": ""
+            },
+            {
+              "line": 9,
+              "caption": "Try a negative amount and expect ValueError.",
+              "state": "negative test runs",
+              "output": ""
+            },
+            {
+              "line": 11,
+              "caption": "The expected exception occurred, so the test prints confirmation.",
+              "state": "negative rejected",
+              "output": "Negative rejected"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Add asserts that normalize_category turns ' Food ' into 'food' and an empty string into an empty string. Print Checks passed.",
+          "starter": "def normalize_category(raw):\n    return raw.strip().lower()\n\n# Add two assertions and print the result.",
+          "expected": "Checks passed",
+          "solution": "def normalize_category(raw):\n    return raw.strip().lower()\n\nassert normalize_category(\" Food \") == \"food\"\nassert normalize_category(\"\") == \"\"\nprint(\"Checks passed\")"
+        }
+      },
+      {
+        "id": "run-the-pipeline",
+        "title": "Run the full CSV-to-SQLite pipeline",
+        "explanation": [
+          "This worked example puts extraction, validation, loading, and reporting in one script. It reads CSV text through the same interface you would use with a file, then checks its header before transforming records.",
+          "Validate missing or malformed fields, normalize the category, and record rejected rows by their position after the header. If a duplicate ID appears, keep its first valid occurrence. Rejecting an invalid occurrence does not prevent a later valid occurrence from loading.",
+          "Load the accepted tuples together with a parameterized insert and query the results in alphabetical order. The in-memory database makes this example repeatable. In a persistent pipeline, use an explicit rule for reruns, such as merging by expense ID."
+        ],
+        "summary": "Validate the source, preserve rejections, and load and report clean records with predictable results.",
+        "example": {
+          "code": "import csv\nimport sqlite3\nfrom contextlib import closing\nfrom io import StringIO\n\ndata = \"id,category,cents\\nA, Food ,150\\nB,books,bad\\nA,food,200\\nC,books,75\\n\"\nreader = csv.DictReader(StringIO(data))\nif not {\"id\", \"category\", \"cents\"}.issubset(reader.fieldnames or []):\n    raise ValueError(\"Missing required columns\")\n\naccepted, rejected, seen = [], [], set()\nfor position, row in enumerate(reader, start=1):\n    expense_id = (row[\"id\"] or \"\").strip()\n    category = (row[\"category\"] or \"\").strip().lower()\n    try:\n        cents = int(row[\"cents\"])\n    except (TypeError, ValueError):\n        rejected.append((position, \"invalid amount\"))\n        continue\n    if not expense_id or not category or cents < 0:\n        rejected.append((position, \"invalid record\"))\n    elif expense_id in seen:\n        rejected.append((position, \"duplicate\"))\n    else:\n        seen.add(expense_id)\n        accepted.append((expense_id, category, cents))\n\nwith closing(sqlite3.connect(\":memory:\")) as db:\n    with db:\n        db.execute(\"CREATE TABLE expenses (id TEXT PRIMARY KEY, category TEXT, cents INTEGER)\")\n        db.executemany(\"INSERT INTO expenses VALUES (?, ?, ?)\", accepted)\n    results = db.execute(\"SELECT category, SUM(cents) FROM expenses GROUP BY category ORDER BY category\")\n    for category, total_cents in results:\n        print(category, total_cents)\nprint(\"Rejected:\", rejected)",
+          "output": "books 75\nfood 150\nRejected: [(2, 'invalid amount'), (3, 'duplicate')]",
+          "steps": [
+            {
+              "line": 8,
+              "caption": "Check that the header includes all required columns.",
+              "state": "id, category, cents present",
+              "output": ""
+            },
+            {
+              "line": 26,
+              "caption": "Accept the first row after trimming the category and converting the amount.",
+              "state": "accepted = [(A, food, 150)]",
+              "output": ""
+            },
+            {
+              "line": 18,
+              "caption": "Reject B because its cents field is not numeric.",
+              "state": "rejected = [(2, invalid amount)]",
+              "output": ""
+            },
+            {
+              "line": 23,
+              "caption": "Reject the second A because a valid A already loaded into the accepted list.",
+              "state": "rejected also contains (3, duplicate)",
+              "output": ""
+            },
+            {
+              "line": 26,
+              "caption": "Accept C, which is the fourth source record.",
+              "state": "accepted also contains (C, books, 75)",
+              "output": ""
+            },
+            {
+              "line": 31,
+              "caption": "Insert the accepted tuples together. Leaving with db commits a successful transaction.",
+              "state": "two rows inserted",
+              "output": ""
+            },
+            {
+              "line": 34,
+              "caption": "Print the first category and its total.",
+              "state": "category = books, total_cents = 75",
+              "output": "books 75"
+            },
+            {
+              "line": 34,
+              "caption": "Print the second category and its total.",
+              "state": "category = food, total_cents = 150",
+              "output": "books 75\nfood 150"
+            },
+            {
+              "line": 35,
+              "caption": "Print the positions and reasons kept for rejected source records.",
+              "state": "two rows rejected",
+              "output": "books 75\nfood 150\nRejected: [(2, 'invalid amount'), (3, 'duplicate')]"
+            }
+          ]
+        },
+        "practice": {
+          "prompt": "Add the supplied new valid expense to accepted, then use the report function and print the results. The food total should reach 200 cents.",
+          "starter": "def report(rows):\n    totals = {}\n    for _, category, cents in rows:\n        totals[category] = totals.get(category, 0) + cents\n    return sorted(totals.items())\n\naccepted = [(\"A\", \"food\", 150), (\"C\", \"books\", 75)]\nnew_expense = (\"D\", \"food\", 50)\n# Add the new expense and print the report.",
+          "expected": "[('books', 75), ('food', 200)]",
+          "solution": "def report(rows):\n    totals = {}\n    for _, category, cents in rows:\n        totals[category] = totals.get(category, 0) + cents\n    return sorted(totals.items())\n\naccepted = [(\"A\", \"food\", 150), (\"C\", \"books\", 75)]\nnew_expense = (\"D\", \"food\", 50)\naccepted.append(new_expense)\nprint(report(accepted))"
+        },
+        "diagram": [
+          "Read CSV header and rows",
+          "Validate rows and deduplicate IDs",
+          "Insert accepted records",
+          "Report totals and rejected rows"
+        ]
+      }
+    ],
+    "legacy_title": "Expense Tracker"
+  }
+]

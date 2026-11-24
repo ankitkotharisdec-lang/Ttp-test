@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from learning import views
+from learning import annotations, views
 urlpatterns = [
  path('admin/',admin.site.urls),
  path('',views.roadmap,name='home'),
@@ -14,5 +14,7 @@ urlpatterns = [
  path('logout/',views.logout_view,name='logout'),
  path('account/',views.account,name='account'),
  path('api/lessons/<uuid:lesson_id>/complete/',views.complete_lesson,name='lesson-complete'),
+ path('api/lessons/<uuid:lesson_id>/annotations/',annotations.lesson_annotations,name='lesson-annotations'),
+ path('api/courses/<slug:slug>/bookmarks/',annotations.course_bookmarks,name='course-bookmarks'),
  path('lessons/<uuid:lesson_id>/',views.lesson_detail,name='lesson-detail'),
 ]

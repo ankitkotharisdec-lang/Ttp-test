@@ -1,0 +1,156 @@
+.python-practice {
+    margin-block: 34px;
+    padding: clamp(14px, 3vw, 26px);
+    border: 1px solid #c8dbe8;
+    border-top: 4px solid var(--blue);
+    border-radius: 8px;
+    background: #f5f9fc;
+}
+
+.python-practice h3 {
+    margin: 0 0 8px;
+    color: var(--navy);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.practice-prompt p {
+    margin: 0 0 14px;
+}
+
+.practice-panes {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 10px;
+}
+
+.practice-pane {
+    min-width: 0;
+    color: #e5f2ff;
+    background: #172c40;
+    border: 1px solid #25445a;
+    border-radius: 7px;
+    overflow: clip;
+}
+
+.practice-pane > label,
+.practice-pane > span {
+    display: block;
+    padding: 8px 14px;
+    background: #233f54;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.practice-code,
+.practice-output,
+.practice-answer pre {
+    font: 14px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace;
+    tab-size: 4;
+    margin: 0;
+    padding: 12px 14px;
+    overflow: auto;
+}
+
+.practice-code,
+.practice-output {
+    display: block;
+    width: 100%;
+    min-height: 220px;
+    color: inherit;
+    background: transparent;
+    border: 0;
+}
+
+.practice-code {
+    resize: vertical;
+    white-space: pre;
+}
+
+.practice-output {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: 440px;
+}
+
+.practice-code:focus-visible,
+.practice-output:focus-visible {
+    outline: 2px solid #82c9ee;
+    outline-offset: -2px;
+}
+
+.practice-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0 0;
+}
+
+.practice-actions button {
+    padding: 7px 12px;
+    border: 1px solid #9fbacc;
+    border-radius: 4px;
+    background: white;
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.practice-actions .practice-run,
+.practice-actions button:hover:not(:disabled) {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+}
+
+.practice-actions .practice-run:hover:not(:disabled) {
+    background: var(--navy);
+}
+
+.practice-actions button:disabled {
+    cursor: default;
+    opacity: .58;
+}
+
+.practice-status {
+    margin: 8px 0 0;
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.practice-status[data-kind='success'] {
+    color: #215f48;
+}
+
+.practice-status[data-kind='error'] {
+    color: #a0373c;
+}
+
+.practice-answer {
+    margin-top: 8px;
+    color: var(--navy);
+    font-size: 14px;
+}
+
+.practice-answer summary {
+    cursor: pointer;
+}
+
+.practice-answer pre {
+    margin-top: 8px;
+    border: 1px solid #c8dbe8;
+    background: white;
+    border-radius: 4px;
+    max-height: 340px;
+}
+
+@media (max-width: 650px) {
+    .practice-panes {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .practice-output {
+        min-height: 90px;
+    }
+}
