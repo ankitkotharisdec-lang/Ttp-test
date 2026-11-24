@@ -1,27 +1,52 @@
-// Shows only the fields that matter for each lesson block type in the admin.
-(function () {
-  var SHOW = {
-    text: ['title', 'body'], must_know: ['title', 'body'], highlight: ['body'],
-    example: ['title', 'body', 'options', 'correct_option', 'explanation'],
-    code: ['title', 'body', 'code'], video: ['title', 'video_url', 'body'], summary: ['title', 'body']
-  };
-  var ALL = ['title', 'body', 'code', 'video_url', 'options', 'correct_option', 'explanation'];
-  function apply(form) {
-    var sel = form.querySelector('select[name$="-block_type"]');
-    if (!sel) return;
-    var show = SHOW[sel.value] || ALL;
-    ALL.forEach(function (f) {
-      var row = form.querySelector('.field-' + f);
-      if (row) row.style.display = show.indexOf(f) > -1 ? '' : 'none';
-    });
+// Show and label the relevant controls in each lesson content block.
+(() => {
+  const selector = 'select[data-block-fields]';
+  const formSelector = '.inline-related';
+  const editors = new WeakMap();
+
+  function getEditor(select) {
+    if (editors.has(select)) return editors.get(select);
+    const form = select.closest(formSelector);
+    const types = JSON.parse(select.dataset.blockFields);
+    const names = new Set(Object.values(types).flatMap(Object.keys));
+    const fields = [...names].map(name => {
+      const row = form.querySelector(`.field-${name}`);
+      if (!row) return null;
+      const control = row.querySelector(`[name$="-${name}"]`);
+      const label = row.querySelector('label');
+      const help = row.querySelector('.help > div');
+      return {
+        name, row, label, help,
+        defaultLabel: control?.dataset.defaultLabel
+          ? `${control.dataset.defaultLabel}:`
+          : label?.textContent,
+        defaultHelp: control?.dataset.defaultHelp ?? help?.textContent,
+      };
+    }).filter(Boolean);
+
+    const editor = {types, fields};
+    editors.set(select, editor);
+    return editor;
   }
-  function init() {
-    document.querySelectorAll('.inline-related').forEach(function (form) {
-      apply(form);
-      var sel = form.querySelector('select[name$="-block_type"]');
-      if (sel && !sel.dataset.bound) { sel.dataset.bound = '1'; sel.addEventListener('change', function () { apply(form); }); }
-    });
+
+  function apply(select) {
+    const {types, fields} = getEditor(select);
+    const visible = types[select.value];
+    for (const field of fields) {
+      const labels = visible?.[field.name];
+      field.row.style.display = visible && !labels && !field.row.querySelector('.errorlist') ? 'none' : '';
+      if (field.label) field.label.textContent = labels?.length ? `${labels[0]}:` : field.defaultLabel;
+      if (field.help) field.help.textContent = labels?.length ? labels[1] : field.defaultHelp;
+    }
   }
-  document.addEventListener('DOMContentLoaded', init);
-  document.addEventListener('formset:added', init);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll(selector).forEach(apply);
+  });
+  document.addEventListener('change', event => {
+    if (event.target.matches(selector)) apply(event.target);
+  });
+  document.addEventListener('formset:added', event => {
+    event.target.querySelectorAll(selector).forEach(apply);
+  });
 })();

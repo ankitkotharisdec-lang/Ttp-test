@@ -1,11 +1,12 @@
-{% load static %}<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Step2Success · {{course.title}}</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap"><link rel="stylesheet" href="{% static 'learning/style.css' %}"></head><body class="grid">{% include 'learning/_header.html' with active='chapters' %}<div class="promo">New chapters are published regularly. Check back often.</div>
+{% load static %}<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Step2Success · {{course.title}}</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap"><link rel="stylesheet" href="{% static 'learning/style.css' %}"><link rel="stylesheet" href="{% static 'learning/annotations.css' %}"></head><body class="grid">{% include 'learning/_header.html' with active='chapters' %}
 <main class="chapters" data-outline-url="{% url 'outline' course.slug %}">
-<div class="pagehead"><h1>Chapters</h1><span class="tag">{{course.title}}</span><nav id="tabs" class="tabs" aria-label="Course sections"></nav></div>
+<div class="pagehead"><h1>Chapters</h1>{% if perms.learning.change_chapter %}<a class="course-admin" href="{% url 'admin:learning_chapter_changelist' %}">Manage chapters</a>{% endif %}<nav id="tabs" class="tabs" aria-label="Course sections"></nav></div>
 <div class="viewrow"><span>Change View:</span><button class="v" id="map" aria-pressed="true">Thumbs</button><button class="v" id="list" aria-pressed="false">List</button><div id="chips" class="chips" aria-label="Your progress"></div><label class="search"><input id="search" type="search" placeholder="Search chapters" aria-label="Search chapters"></label></div>
 <h2 class="ctitle"><span class="badge" aria-hidden="true">{{course.title|slice:":1"|upper}}</span>{{course.title}} Chapters</h2>
 <section class="resume" aria-label="Continue learning"><b id="resume-label">UP NEXT</b><p id="resume-text">Loading…</p><a id="resume-btn" class="resume-btn" href="#">OPEN CHAPTER</a></section>
+{% include 'learning/_annotations.html' %}
 <h3 id="section-title" hidden></h3><p id="count" aria-live="polite"></p>
 <div class="panel"><div id="content"></div><button id="retry" hidden>Retry loading</button></div></main>
 <footer>Step2Success · Python career roadmap</footer>
 <dialog id="chapter-dialog" aria-labelledby="dialog-title"><div class="dh"><span class="dnode" id="dnode"></span><div><h2 id="dialog-title"></h2><p id="dialog-sub"></p></div><button id="close" aria-label="Close">×</button></div><div id="lesson-list"></div></dialog>
-<script src="{% static 'learning/app.js' %}" defer></script></body></html>
+<script src="{% static 'learning/app.js' %}" defer></script><script src="{% static 'learning/annotations.js' %}" defer></script></body></html>

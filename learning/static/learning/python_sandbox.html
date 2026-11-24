@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<!-- A sandbox without allow-same-origin gives this frame and its blob worker an opaque origin. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' blob: https://cdn.jsdelivr.net/pyodide/v0.27.7/full/; connect-src https://cdn.jsdelivr.net/pyodide/v0.27.7/full/; worker-src blob:; form-action 'none'; base-uri 'none'">
+<title>Python runtime</title>
+<script>
+    function startPython(event) {
+        if (event.source !== parent || !event.ports[0] || event.data?.type !== 'python-run') return;
+        removeEventListener('message', startPython);
+
+        const channel = event.ports[0];
+        const { source, code } = event.data;
+        const url = URL.createObjectURL(new Blob([source], { type: 'text/javascript' }));
+        let worker;
+
+        function finish(result) {
+            worker?.terminate();
+            URL.revokeObjectURL(url);
+            channel.postMessage(result);
+            channel.close();
+        }
+
+        try {
+            worker = new Worker(url);
+            worker.onerror = () => finish({ type: 'unavailable' });
+            worker.onmessage = ({ data }) => {
+                if (data?.type === 'ready') {
+                    channel.postMessage({ type: 'ready' });
+                } else if (data?.type === 'unavailable') {
+                    finish({ type: 'unavailable' });
+                } else if (data?.type === 'result') {
+                    const limit = 16000;
+                    finish({
+                        type: 'result',
+                        stdout: typeof data.stdout === 'string' ? data.stdout.slice(0, limit) : '',
+                        stderr: typeof data.stderr === 'string' ? data.stderr.slice(0, limit) : '',
+                        error: typeof data.error === 'string' ? data.error.slice(0, limit) : '',
+                        truncated: Boolean(data.truncated),
+                    });
+                }
+            };
+            worker.postMessage(code);
+        } catch {
+            finish({ type: 'unavailable' });
+        }
+    }
+
+    addEventListener('message', startPython);
+</script>
+</html>

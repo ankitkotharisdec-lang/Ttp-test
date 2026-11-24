@@ -56,3 +56,11 @@ def embed_url(url):
 @register.filter
 def http_only(url):
     return url if (url or '').lower().startswith(('http://', 'https://')) else ''
+
+
+@register.filter
+def lesson_image_url(url):
+    url = url or ''
+    if re.fullmatch(r'/static/learning/[\w-]+\.(?:gif|png|jpe?g|webp|avif)', url, re.IGNORECASE):
+        return url
+    return http_only(url)

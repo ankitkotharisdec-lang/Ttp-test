@@ -1,0 +1,35 @@
+{% if not preview %}
+{% if annotation_mode == 'lesson' %}
+<section class="reading-tools" aria-label="Reading tools" data-reading-tools
+  data-course="{{ lesson.chapter.section.course.slug }}"
+  data-bookmarks-url="{% url 'course-bookmarks' lesson.chapter.section.course.slug %}"
+  data-annotation-url="{% url 'lesson-annotations' lesson.id %}"
+  data-lesson-id="{{ lesson.id }}" data-lesson-title="{{ lesson.title }}"
+  data-chapter-title="{{ lesson.chapter.title }}" data-lesson-url="{{ lesson.get_absolute_url }}"
+  data-signed-in="{{ logged_in|yesno:'1,0' }}" data-csrf="{{ csrf_token }}">
+  <div class="reading-tools-actions">
+    <button type="button" data-bookmark-toggle aria-pressed="false" disabled>Bookmark lesson</button>
+    <button type="button" data-highlight-selection disabled>Highlight selection</button>
+    <details class="reading-tools-drawer">
+      <summary>Highlights <span data-highlight-count></span></summary>
+      <div class="reading-tools-popover">
+        <p data-no-highlights>Select lesson text to highlight a passage.</p>
+        <ul data-saved-highlights></ul>
+      </div>
+    </details>
+  </div>
+{% else %}
+<section class="reading-tools roadmap-bookmarks" aria-label="Saved lessons" data-reading-tools
+  data-course="{{ course.slug }}" data-bookmarks-url="{% url 'course-bookmarks' course.slug %}"
+  data-signed-in="{% if request.session.sb_user_id %}1{% else %}0{% endif %}">
+{% endif %}
+  <details class="reading-tools-drawer" data-bookmark-drawer>
+    <summary>Bookmarks <span data-bookmark-count></span></summary>
+    <div class="reading-tools-popover">
+      <p data-no-bookmarks>Bookmark a lesson to see it here.</p>
+      <ul data-saved-bookmarks></ul>
+    </div>
+  </details>
+  <p class="reading-tools-status" data-reading-status role="status" hidden></p>
+</section>
+{% endif %}
