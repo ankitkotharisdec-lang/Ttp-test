@@ -62,14 +62,23 @@ function snake(chapters){
   return `<div class="roadmap" style="height:${h}px"><svg width="${W}" height="${h}" viewBox="0 0 ${W} ${h}" aria-hidden="true"><path d="${path}" stroke="#cfe3f0" stroke-width="2" fill="none" stroke-linecap="round"/></svg>${html}</div>`}
 function render(){
   if(!data)return;renderChips();renderResume();
-  $('#tabs').innerHTML=data.sections.map((s,i)=>`<button data-section="${i}" class="${i===section?'active':''}" aria-pressed="${i===section}">${esc(s.title)}</button>`).join('');
-  const s=data.sections[section];$('#section-title').textContent=s?s.title:'No published sections yet';
-  const q=$('#search').value.toLowerCase(),chapters=(s?.chapters||[]).filter(c=>c.title.toLowerCase().includes(q));
+  const showSections = data.slug !== 'python';
+  const tabs = $('#tabs');
+  tabs.hidden = !showSections;
+  if (showSections) {
+    tabs.innerHTML = data.sections.map((s, i) => `<button data-section="${i}" class="${i === section ? 'active' : ''}" aria-pressed="${i === section}">${esc(s.title)}</button>`).join('');
+  }
+  const selectedSection = data.sections[section];
+  const availableChapters = showSections ? selectedSection?.chapters || [] : allChapters();
+  const sectionTitle = showSections ? selectedSection?.title : data.title;
+  $('#section-title').textContent = sectionTitle || 'No published sections yet';
+  const query = $('#search').value.trim().toLowerCase();
+  const chapters = availableChapters.filter(chapter => chapter.title.toLowerCase().includes(query));
   const d=chapters.reduce((n,c)=>n+done(c),0),t=chapters.reduce((n,c)=>n+c.lesson_count,0);
-  $('#count').textContent=`${s?s.title+' · ':''}${plural(chapters.length,'chapter')} · ${d} of ${t} lessons covered`;
+  $('#count').textContent=`${sectionTitle ? sectionTitle + ' · ' : ''}${plural(chapters.length,'chapter')} · ${d} of ${t} lessons covered`;
   $('#map').setAttribute('aria-pressed',mode==='map');$('#list').setAttribute('aria-pressed',mode==='list');
   if(!chapters.length){$('#content').textContent='No published chapters match this view.';return}
-  if(mode==='list'||q){$('#content').innerHTML=chapters.map(c=>`<button class="row" data-id="${c.id}"><b class="num ${state(c)==='complete'?'ok':''}">${state(c)==='complete'?'✓':allChapters().indexOf(c)+1}</b><span class="rt"><span>${esc(c.title)}</span><span class="bar sm"><i style="width:${pct(c)}%"></i></span></span><small>${done(c)} / ${c.lesson_count} lessons read</small></button>`).join('');return}
+  if(mode==='list'||query){$('#content').innerHTML=chapters.map(c=>`<button class="row" data-id="${c.id}"><b class="num ${state(c)==='complete'?'ok':''}">${state(c)==='complete'?'✓':allChapters().indexOf(c)+1}</b><span class="rt"><span>${esc(c.title)}</span><span class="bar sm"><i style="width:${pct(c)}%"></i></span></span><small>${done(c)} / ${c.lesson_count} lessons read</small></button>`).join('');return}
   $('#content').innerHTML=snake(chapters)}
 $('#tabs').onclick=e=>{const b=e.target.closest('[data-section]');if(b){section=Number(b.dataset.section);$('#search').value='';render()}};
 $('#map').onclick=()=>{mode='map';render()};$('#list').onclick=()=>{mode='list';render()};$('#search').oninput=render;$('#retry').onclick=load;
