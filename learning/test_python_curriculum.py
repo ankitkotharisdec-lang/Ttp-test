@@ -8,6 +8,17 @@ from .models import Chapter, Course, Lesson, LessonBlock, LessonProgress, Sectio
 
 
 class CurriculumUpgradeTests(TestCase):
+    def test_fresh_database_keeps_published_lesson_address(self):
+        response = self.client.get('/lessons/82a7c0a5-d280-477b-b9dd-7f663983cf72/')
+        self.assertEqual(response.context['lesson'].title, 'List methods')
+        self.assertContains(response, 'id="lesson-index"')
+        self.assertContains(response, 'id="lesson-progress"')
+        self.assertRedirects(
+            self.client.get('/lessons/87641624-e73c-4185-a7ec-a9d83ada9d5d/'),
+            '/lessons/82a7c0a5-d280-477b-b9dd-7f663983cf72/',
+            status_code=301,
+        )
+
     def test_upgrade_preserves_lesson_identity_and_author_edits(self):
         course = Course.objects.get(slug='python')
         Lesson.objects.filter(chapter__section__course=course).delete()
