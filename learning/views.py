@@ -64,15 +64,37 @@ def lesson_detail(request,lesson_id):
     for l in order:
         if l.chapter_id not in chap_ids: chap_ids.append(l.chapter_id)
     chapter_no=chap_ids.index(lesson.chapter_id)+1 if lesson.chapter_id in chap_ids else lesson.chapter.position
-    lesson_no=sum(1 for l in order[:max(i,0)] if l.chapter_id==lesson.chapter_id)+1 if i>=0 else lesson.position
     statuses = progress.status_map(uid) if uid else {}
     done_total = sum(statuses.get(item.id) == 'completed' for item in order)
     chapter_lessons = [item for item in order if item.chapter_id == lesson.chapter_id]
+    sidebar_order = chapter_lessons
+    if preview and i < 0:
+        sidebar_order = sorted([*chapter_lessons, lesson], key=lambda item: (item.position, item.id))
+    sidebar_lessons = [
+        {
+            'id': item.id,
+            'number': number,
+            'title': item.title,
+            'url': item.get_absolute_url(),
+            'status': statuses.get(item.id, 'new'),
+        }
+        for number, item in enumerate(sidebar_order, 1)
+    ]
+    sidebar_index = next((index for index, item in enumerate(sidebar_order) if item.id == lesson.id), None)
+    lesson_no = lesson.position if sidebar_index is None else sidebar_index + 1
+    next_incomplete = None
+    if sidebar_index is not None:
+        other_lessons = sidebar_order[sidebar_index + 1:] + sidebar_order[:sidebar_index]
+        next_incomplete = next(
+            (item for item in other_lessons if statuses.get(item.id) != LessonProgress.COMPLETED),
+            None,
+        )
     ctx={'lesson':lesson,'blocks':list(blocks),'preview':preview,'status':status,'logged_in':bool(uid),
          'prev':order[i-1] if i>0 else None,'next':order[i+1] if 0<=i<len(order)-1 else None,
          'position':i+1 if i>=0 else None,'total':len(order),'me':progress.stats(uid) if uid else None,
          'chapter_no':chapter_no,'lesson_no':lesson_no,'done_total':done_total,
          'chapter_lessons':chapter_lessons,
+         'sidebar_lessons':sidebar_lessons,'next_incomplete':next_incomplete,
          'chapter_done':sum(statuses.get(item.id) == 'completed' for item in chapter_lessons),
          'faces':[(1,'😞','Very unhelpful'),(2,'😕','Unhelpful'),(3,'😐','Neutral'),(4,'🙂','Helpful'),(5,'😄','Very helpful')]}
     return render(request,'learning/lesson.html',ctx)

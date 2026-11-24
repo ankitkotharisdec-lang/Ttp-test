@@ -1,0 +1,43 @@
+<aside class="lesson-sidebar" aria-label="Lesson navigation and progress">
+  <details class="lesson-sidebar-card" id="lesson-index" open>
+    <summary>Chapter index</summary>
+    <nav aria-label="{{ lesson.chapter.title }} lessons">
+      <ol class="chapter-links">
+        {% for item in sidebar_lessons %}
+        <li>
+          <a href="{{ item.url }}"{% if item.id == lesson.id %} aria-current="page"{% endif %}>
+            <span class="chapter-link-number">{{ chapter_no }}.{{ item.number }}</span>
+            <span class="chapter-link-title">{{ item.title }}</span>
+            {% if logged_in and not preview %}
+              <span class="chapter-link-state" data-lesson-state="{{ item.status }}">
+                {% if item.status == 'completed' %}Completed{% elif item.status == 'in_progress' %}In progress{% else %}Not started{% endif %}
+              </span>
+            {% endif %}
+          </a>
+        </li>
+        {% endfor %}
+      </ol>
+    </nav>
+  </details>
+  <details class="lesson-sidebar-card" id="lesson-progress">
+    <summary>
+      <span>Progress</span>
+      <span class="sidebar-count"><b id="read-count">{{ chapter_done }}</b> / {{ chapter_lessons|length }} read</span>
+    </summary>
+    <div class="sidebar-progress">
+      <label class="reader-progress" for="chapter-meter">
+        Chapter <span id="chapter-value">{% widthratio chapter_done chapter_lessons|length 100 %}%</span>
+      </label>
+      <progress id="chapter-meter" max="{{ chapter_lessons|length|default:1 }}" value="{{ chapter_done }}"></progress>
+      {% if logged_in and total and not preview %}
+        <label class="reader-progress" for="course-progress">
+          Course <span id="course-percent">{% widthratio done_total total 100 %}%</span>
+        </label>
+        <progress id="course-progress" value="{{ done_total }}" max="{{ total }}"></progress>
+          {% if next_incomplete %}<a href="{{ next_incomplete.get_absolute_url }}">Continue with {{ next_incomplete.title }} →</a>{% endif %}
+      {% elif not preview %}
+        <a href="{% url 'login' %}?next={{ request.path|urlencode }}%23lesson-progress">Log in to track progress</a>
+      {% endif %}
+    </div>
+  </details>
+</aside>
