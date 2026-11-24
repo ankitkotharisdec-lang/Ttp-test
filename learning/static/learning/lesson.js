@@ -17,6 +17,22 @@ document.querySelectorAll('.blk-ex').forEach(ex=>{
   if(again)again.onclick=reset;
   if(!opts.length){box.textContent=box.dataset.text;box.hidden=!box.dataset.text}
 });
+const sidebarPanels = {
+  '#lesson-index': document.getElementById('lesson-index'),
+  '#lesson-progress': document.getElementById('lesson-progress'),
+};
+if (matchMedia('(max-width: 960px)').matches && location.hash !== '#lesson-index') {
+  sidebarPanels['#lesson-index'].open = false;
+}
+function openSidebarPanel(hash) {
+  const panel = sidebarPanels[hash];
+  if (panel) panel.open = true;
+}
+document.querySelectorAll('.study-head a[href^="#"]').forEach(link => {
+  link.addEventListener('click', () => openSidebarPanel(link.hash));
+});
+addEventListener('hashchange', () => openSidebarPanel(location.hash));
+openSidebarPanel(location.hash);
 const done=document.getElementById('done');if(!done)return;
 let rating=0;
 const post=async data=>{const r=await fetch(lp.dataset.completeUrl,{method:'POST',credentials:'same-origin',headers:{'X-CSRFToken':lp.dataset.csrf,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(data)});if(r.status===401){location.href='/login/?next='+encodeURIComponent(location.pathname);return null}if(!r.ok)throw Error();return r.json()};
@@ -33,6 +49,11 @@ done.onclick=async()=>{
       document.getElementById('chapter-value').textContent=Math.round(100*chapter.value/chapter.max)+'%';
     }
     done.hidden=true;lp.dataset.status='completed';
+    const currentState = document.querySelector('.chapter-links [aria-current="page"] [data-lesson-state]');
+    if (currentState) {
+      currentState.dataset.lessonState = 'completed';
+      currentState.textContent = 'Completed';
+    }
     document.getElementById('fh').textContent=d.xp_gained?'Lesson complete! 🎉':'Already complete';
     document.getElementById('fp').textContent='';
     const s=d.stats,cel=document.getElementById('cel');

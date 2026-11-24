@@ -1,12 +1,17 @@
 {% load static rich %}<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{lesson.title}} · Step2Success</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap"><link rel="stylesheet" href="{% static 'learning/style.css' %}"><link rel="stylesheet" href="{% static 'learning/python_practice.css' %}">
-<link rel="stylesheet" href="{% static 'learning/annotations.css' %}"></head><body class="lesson-page"><header class="study-head"><div><a href="{% url 'roadmap' lesson.chapter.section.course.slug %}">← Back to chapters</a><details class="reader-index">
-<summary>Chapter index · {{ chapter_lessons|length }} lessons</summary>
-<nav aria-label="Chapter lessons"><ol>
-{% for item in chapter_lessons %}<li><a href="{{ item.get_absolute_url }}" {% if item.id == lesson.id %}aria-current="page"{% endif %}>{{ item.title }}</a></li>{% endfor %}
-</ol></nav></details><label><small class="read-count"><b id="read-count">{{ chapter_done }}</b> / {{ chapter_lessons|length }} lessons read</small>Chapter progress <span id="chapter-value">{% widthratio chapter_done chapter_lessons|length 100 %}%</span><progress id="chapter-meter" max="{{ chapter_lessons|length|default:1 }}" value="{{ chapter_done }}"></progress></label></div></header>
+<link rel="stylesheet" href="{% static 'learning/annotations.css' %}"></head><body class="lesson-page"><header class="study-head">
+  <div>
+    <a href="{% url 'roadmap' lesson.chapter.section.course.slug %}">← Back to chapters</a>
+    <nav aria-label="On this lesson">
+      <a href="#lesson-index">Chapter index</a>
+      <a href="#lesson-progress">Progress</a>
+    </nav>
+  </div>
+</header>
 <div class="lbar" aria-hidden="true"><i id="readbar"></i></div>
 {% if prev %}<a class="sidenav p" href="{{prev.get_absolute_url}}" aria-label="Previous lesson">‹</a>{% endif %}{% if next %}<a class="sidenav n" href="{{next.get_absolute_url}}" aria-label="Next lesson">›</a>{% endif %}
 <div class="lwrap lp" data-complete-url="{% url 'lesson-complete' lesson.id %}" data-csrf="{{ csrf_token }}" data-logged-in="{{ logged_in|yesno:'1,0' }}" data-status="{{status}}">
+{% include 'learning/_lesson_sidebar.html' %}
 <article class="lcard">
 <h1 class="chtitle">{{chapter_no}}. {{lesson.chapter.title}}</h1>
 <h2 class="lestitle">{{chapter_no}}.{{lesson_no}} {{lesson.title}}</h2>
@@ -42,7 +47,6 @@
 </figure>
 {% endif %}{% endwith %}
 {% elif b.block_type == 'summary' %}<div class="blk blk-sum" data-annotation-block="{{ b.id }}"><h3>{{b.title|default:"Key takeaways"}}</h3>{{b.body|rich}}</div>{% endif %}{% empty %}{% if lesson.explanation or lesson.code_example or lesson.summary %}{% if lesson.explanation %}<div class="blk blk-text" data-annotation-block="intro">{{lesson.explanation|rich}}</div>{% endif %}{% if lesson.code_example %}<div class="blk blk-code"><h3>Example</h3><div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>{{lesson.code_example}}</code></pre></div></div>{% endif %}{% if lesson.expected_output %}<div class="blk blk-code"><h3>Output</h3><div class="codewrap"><pre><code>{{lesson.expected_output}}</code></pre></div></div>{% endif %}{% if lesson.video_url|http_only %}<div class="blk"><a class="blk-video-link" href="{{lesson.video_url|http_only}}" target="_blank" rel="noopener noreferrer">▶ Watch the video</a></div>{% endif %}{% if lesson.summary %}<div class="blk blk-sum" data-annotation-block="summary"><h3>Key takeaways</h3>{{lesson.summary|rich}}</div>{% endif %}{% else %}<p class="blk-text">This lesson has no content yet.</p>{% endif %}{% endfor %}
-{% if logged_in and total and not preview %}<label class="reader-progress">Course progress <span id="course-percent">{% widthratio done_total total 100 %}%</span><progress id="course-progress" value="{{ done_total }}" max="{{ total }}"></progress></label>{% endif %}
 <div class="metas">{% if position %}<span class="pill">Lesson {{position}} of {{total}}</span>{% endif %}{% if preview %}<span class="pill pv">Admin preview{% if not lesson.is_published %} · draft{% endif %}</span>{% elif status == 'completed' %}<span class="pill ok" id="statuspill">✓ Completed</span>{% elif status == 'in_progress' %}<span class="pill mid" id="statuspill">● In progress</span>{% endif %}{% if me %}<span class="pill">🔥 {{me.streak}} day streak</span><span class="pill">⚡ {{me.xp}} XP</span>{% endif %}</div>
 {% if not preview %}{% if logged_in %}<section class="helpful" aria-label="Rate this lesson"><h3>How helpful did you find this lesson?</h3><div class="faces" id="rate" role="group">{% for n,e,t in faces %}<button type="button" class="face" data-r="{{n}}"><span class="f" aria-hidden="true">{{e}}</span>{{t}}</button>{% endfor %}</div></section>
 <section class="finishbox" aria-live="polite"><h2 id="fh">{% if status == 'completed' %}You completed this lesson{% else %}Finished reading?{% endif %}</h2><p id="fp">{% if status == 'completed' %}Nice work. Move on when you are ready.{% else %}Mark it complete to earn <b>20 XP</b> and grow your streak.{% endif %}</p><button class="btn go" id="done" type="button" {% if status == 'completed' %}hidden{% endif %}>Mark complete</button><div class="celebrate" id="cel"><span class="xpgain" id="xpg"></span><p id="celmsg"></p></div></section>
